@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @default(uuid()) @id
+  username   String   @unique
+  password   String
+  created_at  DateTime @default(now()) @updatedAt
+  updated_at  DateTime @default(now()) @updatedAt
+  deleted_at  DateTime?
+  plants Plant[]
+
+  // email, accountConfirmed ?
+}
+
+model Plant {
+    id         String   @default(uuid()) @id
+    userId  String
+    name String
+    description String?
+    image_src String?
+    color String? 
+    created_at  DateTime @default(now()) @updatedAt
+    updated_at  DateTime @default(now()) @updatedAt
+    deleted_at  DateTime?
+
+    user    User    @relation(fields: [userId], references: [id])
+    watering Watering[]
+
+  // "GardenID"?
+}
+
+model Watering {
+    id         String   @default(uuid()) @id
+    plant    Plant    @relation(fields: [plantId], references: [id])
+    plantId  String
+}
