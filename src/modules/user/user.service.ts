@@ -1,15 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { RegisterRequestDto } from './dto/RegisterRequestDto';
+import type { User } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { ExistingUsernameException } from './exception/ExistingUsername.exception';
+import { ResponseType } from 'src/enums/ResponseType.enum';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  getUser(): string {
-    return 'user';
+  async register(registerRequestDto: RegisterRequestDto): Promise<ResponseType> {
+    const existingUsername = await this.prisma.user.findFirst({
+      where: {
+        username: registerRequestDto.username
+      }
+    })
+
+    if (existingUsername) {
+      throw new ExistingUsernameException()
+    }
+
+    const user = await this.prisma.user.create({
+      data: {
+        username: registerRequestDto.username,
+        password: this.generateHash(registerRequestDto.password),
+      },
+    });
+
+    // @TODO: add logger
+    console.log(`Registered user: ${user.username}`)
+
+    return ResponseType.SUCCESS
   }
 
-  register(): string {
-      return 'heja'
+  private generateHash(value: string): string {
+    // @TODO: add env salt
+    return bcrypt.hashSync(value, 2);
+
   }
 }
