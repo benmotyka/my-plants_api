@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterRequestDto } from './dto/RegisterRequestDto';
-import type { User } from '@prisma/client';
+import { RegisterRequestDto } from './dto/RegisterRequest.dto';
 import * as bcrypt from 'bcrypt';
 import { ExistingUsernameException } from './exception/ExistingUsername.exception';
 import { ResponseType } from 'src/enums/ResponseType.enum';
