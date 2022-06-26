@@ -9,6 +9,14 @@ import { ResponseType } from 'src/enums/ResponseType.enum';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async findOneByUsername(username: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        username
+      }
+    })
+  }
+
   async register(registerRequestDto: RegisterRequestDto): Promise<ResponseType> {
     const existingUsername = await this.prisma.user.findFirst({
       where: {

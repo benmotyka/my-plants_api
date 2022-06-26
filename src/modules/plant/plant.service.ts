@@ -7,9 +7,7 @@ export class PlantService {
   constructor(private prisma: PrismaService) {}
 
   createPlant(createPlantRequestDto: CreatePlantRequestDto) {
-    console.log('WWWWWWWWWWWW')
     console.log(createPlantRequestDto)
-    console.log('WWWWWWWWWWWW')
   }
   
 }
