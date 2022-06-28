@@ -2,11 +2,14 @@ import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { User } from '.prisma/client';
 import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { LoginResponseDto } from './dto/LoginResponse.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
+    private jwtService: JwtService,
   ) {}
 
   async validateUser(
@@ -24,5 +27,14 @@ export class AuthService {
       }
     }
     return null;
+  }
+
+  async login(user: User): Promise<LoginResponseDto> {
+    return {
+      access_token: this.jwtService.sign({
+        username: user.username,
+        sub: user.id,
+      }),
+    };
   }
 }
