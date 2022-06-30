@@ -58,4 +58,32 @@ export class AuthService {
     return bcrypt.hashSync(value, 2);
 
   }
+
+  private async generateTokens({userId, username}: {userId: string, username: string}): Promise<{accessToken: string, refreshToken: string}> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+        },
+        {
+          expiresIn: 60 * 15,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+        },
+        {
+          expiresIn: 60 * 60 * 7,
+        },
+      ),
+    ])
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
 }
