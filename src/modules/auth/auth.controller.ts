@@ -37,8 +37,8 @@ export class AuthController {
     return new LoginResponseDto(result);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('info')
+  @UseGuards(JwtAuthGuard)
   getProfile(@Request() req) {
     return req.user;
   }

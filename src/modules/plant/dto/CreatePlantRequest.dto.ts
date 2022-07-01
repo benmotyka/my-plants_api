@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsString } from "class-validator";
 import { Trim } from "src/decorators/transform.decorator";
 
 export class CreatePlantRequestDto {

@@ -1,16 +1,27 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Plant } from '.prisma/client';
+import { Body, Controller, HttpCode, HttpStatus, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
 import { PlantService } from './plant.service';
 
-@Controller('plant')
+@Controller('plants')
 export class PlantController {
   constructor(private readonly plantService: PlantService) {}
 
   @Post('')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async createPlant(@Body() createPlantRequestDto: CreatePlantRequestDto): Promise<string> {
-      const result = await this.plantService.createPlant(createPlantRequestDto)
+  async createPlant(@Body() createPlantRequestDto: CreatePlantRequestDto, @Request() req): Promise<string> {
+      const result = await this.plantService.createPlant(createPlantRequestDto, req.user)
 
       return 'ok'
   }
+
+  @Patch('')
+  @UseGuards(JwtAuthGuard)
+  async editPlant(@Body() editPlantRequestDto: EditPlantRequestDto, @Request() req): Promise<string> {
+    
+    const result = await this.plantService.editPlant(editPlantRequestDto, req.user)
+    return 'ok'
+  } 
 }
