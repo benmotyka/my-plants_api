@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
 import { Trim } from 'src/decorators/transform.decorator';
 
-export class CreatePlantRequestDto {
+export class EditPlantRequestDto {
   @Trim()
   @IsString()
   name: string;

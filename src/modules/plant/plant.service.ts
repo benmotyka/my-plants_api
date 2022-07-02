@@ -2,6 +2,7 @@ import { User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
+import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
 
 @Injectable()
 export class PlantService {
@@ -17,5 +18,9 @@ export class PlantService {
         color: createPlantRequestDto.color,
       },
     });
+  }
+
+  editPlant(editPlantRequestDto: EditPlantRequestDto, user: User) {
+    return 'a'
   }
 }

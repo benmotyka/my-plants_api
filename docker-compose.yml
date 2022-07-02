@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: npm run start:dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - db
+  db:
+    image: postgres:12
+    container_name: db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+      PG_DATA: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    network_mode: host
+volumes:
+  pgdata:
