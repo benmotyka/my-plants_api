@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { User } from '.prisma/client';
 
@@ -16,7 +16,10 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   ): Promise<Omit<User, 'password'>> {
     const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new  HttpException({
+        status: HttpStatus.UNAUTHORIZED,
+        error: 'invalid-credentials',
+      }, HttpStatus.UNAUTHORIZED);
     }
     return user;
   }
