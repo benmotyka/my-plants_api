@@ -9,7 +9,10 @@ export class UserService {
   async findOneByUsername(username: string): Promise<User> {
     return this.prisma.user.findFirst({
       where: {
-        username,
+        username: {
+          equals: username,
+          mode: 'insensitive'
+        }
       },
     });
   }
