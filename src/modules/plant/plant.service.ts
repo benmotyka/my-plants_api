@@ -8,7 +8,15 @@ import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
 export class PlantService {
   constructor(private prisma: PrismaService) {}
 
-  async createPlant(createPlantRequestDto: CreatePlantRequestDto, user: User) {
+  getAllPlants(user: User) {
+    return this.prisma.plant.findMany({
+      where: {
+        userId: user.id
+      }
+    })
+  }
+
+  createPlant(createPlantRequestDto: CreatePlantRequestDto, user: User) {
     return this.prisma.plant.create({
       data: {
         userId: user.id,

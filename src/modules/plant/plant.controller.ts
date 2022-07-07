@@ -2,6 +2,7 @@ import { Plant } from '.prisma/client';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Patch,
@@ -18,19 +19,29 @@ import { PlantService } from './plant.service';
 export class PlantController {
   constructor(private readonly plantService: PlantService) {}
 
+  @Get('')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async getAllPlants(@Request() req): Promise<Plant[]> {
+    const result = await this.plantService.getAllPlants(req.user)
+
+    return result
+  }
+
   @Post('')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createPlant(
     @Body() createPlantRequestDto: CreatePlantRequestDto,
     @Request() req,
-  ): Promise<string> {
+  ): Promise<Plant> {
+
     const result = await this.plantService.createPlant(
       createPlantRequestDto,
       req.user,
     );
 
-    return 'ok';
+    return result;
   }
 
   @Patch('')
