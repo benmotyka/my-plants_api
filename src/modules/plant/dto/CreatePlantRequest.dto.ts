@@ -4,15 +4,13 @@ import { Trim } from 'src/decorators/transform.decorator';
 export class CreatePlantRequestDto {
   @Trim()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @Trim()
   @IsString()
-  description?: string;
+  readonly description?: string;
 
-  @IsString()
-  imageSrc?: string;
+  readonly imageSrc?: string;
 
-  @IsString()
-  color?: string;
+  readonly color?: string;
 }

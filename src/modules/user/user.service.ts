@@ -6,6 +6,14 @@ import { User } from '.prisma/client';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async findOneById(id: string): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        id
+      },
+    });
+  }
+
   async findOneByUsername(username: string): Promise<User> {
     return this.prisma.user.findFirst({
       where: {
