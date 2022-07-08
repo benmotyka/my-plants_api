@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Patch,
   Post,
   Request,
@@ -18,11 +19,13 @@ import { PlantService } from './plant.service';
 @Controller('plants')
 export class PlantController {
   constructor(private readonly plantService: PlantService) {}
+  private readonly logger = new Logger(PlantController.name);
 
   @Get('')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async getAllPlants(@Request() req): Promise<Plant[]> {
+    this.logger.debug(`Getting all plants for user: ${req.user.username}`)
     const result = await this.plantService.getAllPlants(req.user)
 
     return result
@@ -35,7 +38,7 @@ export class PlantController {
     @Body() createPlantRequestDto: CreatePlantRequestDto,
     @Request() req,
   ): Promise<Plant> {
-
+    this.logger.debug(`Creating plant for user: ${req.user.username}`)
     const result = await this.plantService.createPlant(
       createPlantRequestDto,
       req.user,
@@ -50,6 +53,7 @@ export class PlantController {
     @Body() editPlantRequestDto: EditPlantRequestDto,
     @Request() req,
   ): Promise<string> {
+    this.logger.debug(`Updating plant for user: ${req.user.username}`)
     const result = await this.plantService.editPlant(
       editPlantRequestDto,
       req.user,

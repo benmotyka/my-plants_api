@@ -7,7 +7,7 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async findOneById(id: string): Promise<User> {
-    return this.prisma.user.findFirst({
+    return await this.prisma.user.findFirst({
       where: {
         id
       },
@@ -15,7 +15,7 @@ export class UserService {
   }
 
   async findOneByUsername(username: string): Promise<User> {
-    return this.prisma.user.findFirst({
+    return await this.prisma.user.findFirst({
       where: {
         username: {
           equals: username,
@@ -32,7 +32,7 @@ export class UserService {
     username: string;
     password: string;
   }): Promise<User> {
-    return this.prisma.user.create({
+    return await this.prisma.user.create({
       data: {
         username,
         password,

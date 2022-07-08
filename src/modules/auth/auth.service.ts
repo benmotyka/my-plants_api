@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { User } from '.prisma/client';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -14,37 +14,68 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
+  private readonly logger = new Logger(AuthService.name);
 
   async validateUser(
     username: string,
     plainTextPass: string,
   ): Promise<Omit<User, 'password'>> {
+    this.logger.debug(`Validating user: ${username}`);
     const user = await this.userService.findOneByUsername(username);
 
     if (user) {
+      this.logger.debug(
+        `Found user: ${username}, checking if password matches`,
+      );
       const passwordMatch = bcrypt.compareSync(plainTextPass, user.password);
 
       if (passwordMatch) {
+        this.logger.debug(
+          `Validating user: ${username} credentials was successful`,
+        );
         const { password, ...result } = user;
         return result;
       }
     }
+    this.logger.debug(`Validation unsuccessful for user: ${username}`);
     return null;
   }
 
-  async register(registerRequestDto: RegisterRequestDto): Promise<ResponseType> {
-    const existingUsername = await this.userService.findOneByUsername(registerRequestDto.username)
+  async register(
+    registerRequestDto: RegisterRequestDto,
+  ): Promise<ResponseType> {
+    this.logger.debug(
+      `Registering new user: ${registerRequestDto.username}, checking if username exists`,
+    );
+    const existingUsername = await this.userService.findOneByUsername(
+      registerRequestDto.username,
+    );
 
     if (existingUsername) {
-      throw new ExistingUsernameException()
+      this.logger.debug(
+        `Username: ${registerRequestDto.username} exists, throwing exception`,
+      );
+      throw new ExistingUsernameException();
     }
 
-    const user = await this.userService.createUser({username: registerRequestDto.username, password: this.generateHash(registerRequestDto.password)})
+    this.logger.debug(
+      `Username: ${registerRequestDto.username} seems to be unique, creating new user`,
+    );
+    const user = await this.userService.createUser({
+      username: registerRequestDto.username,
+      password: this.generateHash(registerRequestDto.password),
+    });
 
-    return ResponseType.SUCCESS
+    this.logger.debug(
+      `Registering new user: ${registerRequestDto.username} was successful`,
+    );
+    return ResponseType.SUCCESS;
   }
 
-  async login(user: User): Promise<LoginResponseDto> {
+  login(user: User): LoginResponseDto {
+    this.logger.debug(
+      `Login successful for username: ${user.username}, generating access token for username`,
+    );
     return {
       access_token: this.jwtService.sign({
         username: user.username,
@@ -56,6 +87,5 @@ export class AuthService {
   private generateHash(value: string): string {
     // @TODO: add env salt
     return bcrypt.hashSync(value, 2);
-
   }
 }
