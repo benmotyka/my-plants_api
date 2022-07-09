@@ -13,7 +13,9 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
+import { CreatePlantResponseResponseDto } from './dto/CreatePlantResponse.dto';
 import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
+import { GetAllPlantsResponseDto } from './dto/GetAllPlantsResponse.dto';
 import { PlantService } from './plant.service';
 
 @Controller('plants')
@@ -24,11 +26,11 @@ export class PlantController {
   @Get('')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getAllPlants(@Request() req): Promise<Plant[]> {
+  async getAllPlants(@Request() req): Promise<GetAllPlantsResponseDto> {
     this.logger.debug(`Getting all plants for user: ${req.user.username}`)
-    const result = await this.plantService.getAllPlants(req.user)
+    const plants = await this.plantService.getAllPlants(req.user)
 
-    return result
+    return new GetAllPlantsResponseDto(plants)
   }
 
   @Post('')
@@ -37,14 +39,14 @@ export class PlantController {
   async createPlant(
     @Body() createPlantRequestDto: CreatePlantRequestDto,
     @Request() req,
-  ): Promise<Plant> {
+  ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(`Creating plant for user: ${req.user.username}`)
-    const result = await this.plantService.createPlant(
+    const plant = await this.plantService.createPlant(
       createPlantRequestDto,
       req.user,
     );
 
-    return result;
+    return new CreatePlantResponseResponseDto(plant)
   }
 
   @Patch('')
