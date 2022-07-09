@@ -1,5 +1,5 @@
 import { Plant, User } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PlantResponse } from 'src/shared/interfaces/PlantResponse.interface';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
@@ -45,7 +45,37 @@ export class PlantService {
     }
   }
 
-  async editPlant(editPlantRequestDto: EditPlantRequestDto, user: User) {
-    return 'a'
+  async editPlant(editPlantRequestDto: EditPlantRequestDto, user: User): Promise<PlantResponse> {
+
+    const plant = await this.prisma.plant.findFirst({
+      where: {
+        id: editPlantRequestDto.id,
+        userId: user.id,
+      }
+    })
+
+    if (!plant) {
+      throw new BadRequestException('plant-not-found')
+    }
+
+    const editedPlant = await this.prisma.plant.update({
+      data: {
+        name: editPlantRequestDto.name,
+        description: editPlantRequestDto.description,
+        image_src: editPlantRequestDto.imageSrc,
+        color: editPlantRequestDto.color,
+      },
+      where: {
+        id: plant.id,
+      }
+    })
+
+    return {
+      id: editedPlant.id,
+      name: editedPlant.name,
+      description: editedPlant.description,
+      imgSrc: editedPlant.image_src,
+      createdAt: editedPlant.created_at,
+    }
   }
 }

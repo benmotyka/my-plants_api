@@ -6,8 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
-  Patch,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +15,7 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
 import { CreatePlantResponseResponseDto } from './dto/CreatePlantResponse.dto';
 import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
+import { EditPlantResponseResponseDto } from './dto/EditPlantResponseResponse.dto';
 import { GetAllPlantsResponseDto } from './dto/GetAllPlantsResponse.dto';
 import { PlantService } from './plant.service';
 
@@ -40,7 +41,7 @@ export class PlantController {
     @Body() createPlantRequestDto: CreatePlantRequestDto,
     @Request() req,
   ): Promise<CreatePlantResponseResponseDto> {
-    this.logger.debug(`Creating plant for user: ${req.user.username}`)
+    this.logger.debug(`Creating plant for user: ${req.user.username} with data: ${JSON.stringify(createPlantRequestDto)}`)
     const plant = await this.plantService.createPlant(
       createPlantRequestDto,
       req.user,
@@ -49,17 +50,18 @@ export class PlantController {
     return new CreatePlantResponseResponseDto(plant)
   }
 
-  @Patch('')
+  @Put('')
   @UseGuards(JwtAuthGuard)
   async editPlant(
     @Body() editPlantRequestDto: EditPlantRequestDto,
     @Request() req,
-  ): Promise<string> {
-    this.logger.debug(`Updating plant for user: ${req.user.username}`)
-    const result = await this.plantService.editPlant(
+  ): Promise<EditPlantResponseResponseDto> {
+    this.logger.debug(`Updating plant for user: ${req.user.username} with data: ${JSON.stringify(editPlantRequestDto)}`)
+    const plant = await this.plantService.editPlant(
       editPlantRequestDto,
       req.user,
     );
-    return 'ok';
+    return new EditPlantResponseResponseDto(plant)
+
   }
 }

@@ -1,18 +1,26 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Trim } from 'src/decorators/transform.decorator';
 
 export class EditPlantRequestDto {
-  @Trim()
   @IsString()
-  name: string;
+  @IsNotEmpty()
+  readonly id: string;
 
   @Trim()
   @IsString()
-  description?: string;
+  @IsNotEmpty()
+  readonly name: string;
 
+  @Trim()
+  @IsOptional()
   @IsString()
-  imageSrc?: string;
+  readonly description?: string;
 
+  @IsOptional()
   @IsString()
-  color?: string;
+  readonly imageSrc?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly color?: string;
 }
