@@ -1,5 +1,8 @@
 import { HttpStatus, BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -14,7 +17,17 @@ async function bootstrap() {
       exceptionFactory: (errors) => new BadRequestException(errors),
     }),
   );
+
+  app.use(
+    rateLimit({
+      windowMs: 5 * 60 * 1000, // minutes
+      max: 100, // limit each IP to requests per windowMs
+    }),
+  );
+
+  app.use(helmet())
   
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000
+  await app.listen(port);
 }
 bootstrap();
