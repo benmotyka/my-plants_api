@@ -7,12 +7,14 @@ import { LoginResponseDto } from './dto/LoginResponse.dto';
 import { ResponseType } from 'src/enums/ResponseType.enum';
 import { RegisterRequestDto } from './dto/RegisterRequest.dto';
 import { ExistingUsernameException } from './exceptions/ExistingUsername.exception';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
   private readonly logger = new Logger(AuthService.name);
 
@@ -27,7 +29,10 @@ export class AuthService {
       this.logger.debug(
         `Found user: ${username}, checking if password matches`,
       );
-      const passwordMatch = bcrypt.compareSync(plainTextPass, user.password);
+      const passwordMatch = bcrypt.compareSync(
+        plainTextPass + this.configService.get('SALT'),
+        user.password,
+      );
 
       if (passwordMatch) {
         this.logger.debug(
@@ -85,7 +90,9 @@ export class AuthService {
   }
 
   private generateHash(value: string): string {
-    // @TODO: add env salt
-    return bcrypt.hashSync(value, 2);
+    return bcrypt.hashSync(
+      value + this.configService.get('SALT'),
+      parseInt(this.configService.get('SALT_ROUNDS')),
+    );
   }
 }

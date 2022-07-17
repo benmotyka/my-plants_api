@@ -19,19 +19,20 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() registerRequestDto: RegisterRequestDto): Promise<RegisterResponseDto> {
-      const result = await this.authService.register(registerRequestDto)
+  async register(
+    @Body() registerRequestDto: RegisterRequestDto,
+  ): Promise<RegisterResponseDto> {
+    const result = await this.authService.register(registerRequestDto);
 
-      return new RegisterResponseDto(result)
+    return new RegisterResponseDto(result);
   }
-
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async login(@Request() req): Promise<LoginResponseDto> {
     const result = await this.authService.login(req.user);
-    
+
     return new LoginResponseDto(result);
   }
 }
