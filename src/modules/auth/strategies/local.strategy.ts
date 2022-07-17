@@ -16,10 +16,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   ): Promise<Omit<User, 'password'>> {
     const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new  HttpException({
-        status: HttpStatus.UNAUTHORIZED,
-        error: 'invalid-credentials',
-      }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          message: 'invalid-credentials',
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return user;
   }
