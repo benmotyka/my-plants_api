@@ -11,8 +11,8 @@ model User {
   id         String   @default(uuid()) @id
   username   String   @unique
   password   String
-  created_at  DateTime @default(now()) @updatedAt
-  updated_at  DateTime @default(now()) @updatedAt
+  created_at  DateTime @default(now())  @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
   deleted_at  DateTime?
   plants Plant[]
 
@@ -26,8 +26,8 @@ model Plant {
     description String?
     image_src String?
     color String? 
-    created_at  DateTime @default(now()) @updatedAt
-    updated_at  DateTime @default(now()) @updatedAt
+    created_at  DateTime @default(now())  @db.Timestamptz(6)
+    updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
     deleted_at  DateTime?
 
     user    User    @relation(fields: [userId], references: [id])
@@ -38,6 +38,9 @@ model Plant {
 
 model Watering {
     id         String   @default(uuid()) @id
-    plant    Plant    @relation(fields: [plantId], references: [id])
     plantId  String
+    created_at  DateTime @default(now())  @db.Timestamptz(6)
+    updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
+
+    plant    Plant    @relation(fields: [plantId], references: [id])
 }

@@ -16,6 +16,14 @@ export class PlantService {
         userId: user.id,
         deleted_at: null
       },
+      include: {
+        watering: {
+          orderBy: {
+            created_at: 'desc',
+          },
+          take: 1
+        }
+      }
     });
 
     return plants.map((plant) => ({
@@ -24,6 +32,7 @@ export class PlantService {
       description: plant.description,
       imgSrc: plant.image_src,
       createdAt: plant.created_at,
+      latestWatering: plant.watering[0]
     }));
   }
 
