@@ -1,7 +1,7 @@
-import { IsArray } from "class-validator";
+import { IsArray } from 'class-validator';
 
 export interface WateringData {
-    [key: string]: string[]
+  [key: string]: Date[];
 }
 
 export class GetAllWateringsForPlantResponseDto {

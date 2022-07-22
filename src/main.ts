@@ -1,4 +1,8 @@
-import { HttpStatus, BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  HttpStatus,
+  BadRequestException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -6,7 +10,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {cors: true});
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,14 +24,14 @@ async function bootstrap() {
 
   app.use(
     rateLimit({
-      windowMs: 5 * 60 * 1000, // minutes
+      windowMs: 1 * 60 * 1000, // minutes
       max: 100, // limit each IP to requests per windowMs
     }),
   );
 
-  app.use(helmet())
-  
-  const port = process.env.PORT || 3000
+  app.use(helmet());
+
+  const port = process.env.PORT || 3000;
   await app.listen(port);
 }
 bootstrap();

@@ -65,14 +65,13 @@ export class WateringService {
     let response: WateringData = {};
     waterings.forEach((item) => {
       const day = dayjs(item.created_at).format('YYYY-MM-DD');
-      const hour = dayjs(item.created_at).format('HH:mm');
       if (!response[day]) {
         response = {
           ...response,
           [day]: [],
         };
       }
-      response[day].push(hour);
+      response[day].push(item.created_at);
     });
 
     return response;
