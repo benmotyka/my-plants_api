@@ -8,39 +8,57 @@ datasource db {
 }
 
 model User {
-  id         String   @default(uuid()) @id
-  username   String   @unique
+  id         String    @id @default(uuid())
+  username   String    @unique
   password   String
-  created_at  DateTime @default(now())  @db.Timestamptz(6)
-  updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
-  deleted_at  DateTime?
-  plants Plant[]
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime?
+  plants     Plant[]
 
   // email, accountConfirmed ?
 }
 
 model Plant {
-    id         String   @default(uuid()) @id
-    userId  String
-    name String
-    description String?
-    image_src String?
-    color String? 
-    created_at  DateTime @default(now())  @db.Timestamptz(6)
-    updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
-    deleted_at  DateTime?
+  id          String    @id @default(uuid())
+  userId      String
+  name        String
+  description String?
+  image_src   String?
+  color       String?
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  deleted_at  DateTime?
 
-    user    User    @relation(fields: [userId], references: [id])
-    watering Watering[]
+  user        User         @relation(fields: [userId], references: [id])
+  watering    Watering[]
+  attachments Attachment[]
 
   // "GardenID"?
 }
 
 model Watering {
-    id         String   @default(uuid()) @id
-    plantId  String
-    created_at  DateTime @default(now())  @db.Timestamptz(6)
-    updated_at  DateTime @default(now()) @updatedAt  @db.Timestamptz(6)
+  id         String   @id @default(uuid())
+  plantId    String
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz(6)
 
-    plant    Plant    @relation(fields: [plantId], references: [id])
+  plant Plant @relation(fields: [plantId], references: [id])
+}
+
+model Attachment {
+  id              String         @id @default(uuid())
+  plantId         String
+  url             String
+  attachment_type AttachmentType
+
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+  deleted_at DateTime?
+
+  plant Plant @relation(fields: [plantId], references: [id])
+}
+
+enum AttachmentType {
+  plant_picture
 }

@@ -6,6 +6,7 @@ import {
 import { NestFactory } from '@nestjs/core';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { json } from 'body-parser';
 
 import { AppModule } from './app.module';
 
@@ -28,8 +29,8 @@ async function bootstrap() {
       max: 100, // limit each IP to requests per windowMs
     }),
   );
-
   app.use(helmet());
+  app.use(json({ limit: '20mb' }));
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
