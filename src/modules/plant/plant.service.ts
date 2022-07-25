@@ -2,28 +2,31 @@ import { User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ResponseType } from 'src/enums/ResponseType.enum';
 import { PlantResponse } from 'src/shared/interfaces/PlantResponse.interface';
+import { AttachmentService } from '../attachment/attachment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
 import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
-
 @Injectable()
 export class PlantService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private attachmentService: AttachmentService,
+  ) {}
 
   async getAllPlants(user: User): Promise<PlantResponse[]> {
     const plants = await this.prisma.plant.findMany({
       where: {
         userId: user.id,
-        deleted_at: null
+        deleted_at: null,
       },
       include: {
         watering: {
           orderBy: {
             created_at: 'desc',
           },
-          take: 1
-        }
-      }
+          take: 1,
+        },
+      },
     });
 
     return plants.map((plant) => ({
@@ -32,7 +35,7 @@ export class PlantService {
       description: plant.description,
       imgSrc: plant.image_src,
       createdAt: plant.created_at,
-      latestWatering: plant.watering[0]
+      latestWatering: plant.watering[0],
     }));
   }
 
@@ -45,10 +48,20 @@ export class PlantService {
         userId: user.id,
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
-        image_src: createPlantRequestDto.imageSrc,
+        // image_src: attachmentId,
         color: createPlantRequestDto.color,
       },
     });
+
+    const result = await this.attachmentService.uploadFile(
+      createPlantRequestDto.imageSrc,
+      plant,
+    );
+
+    console.log('QQQQQQQQQQQ');
+    console.log(plant);
+    console.log(result);
+    console.log('QQQQQQQQQQQ');
 
     return {
       id: plant.id,
