@@ -7,4 +7,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   providers: [AttachmentService, ConfigService],
   exports: [AttachmentService],
 })
-export class PlantModule {}
+export class AttachmentModule {}
