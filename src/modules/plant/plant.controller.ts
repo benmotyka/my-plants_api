@@ -44,9 +44,7 @@ export class PlantController {
     @Request() req,
   ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(
-      `Creating plant for user: ${
-        req.user.username
-      } with data: ${JSON.stringify(createPlantRequestDto)}`,
+      `Creating plant for user: ${req.user.username} of name: ${createPlantRequestDto.name}`,
     );
     const plant = await this.plantService.createPlant(
       createPlantRequestDto,

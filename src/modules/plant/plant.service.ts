@@ -48,26 +48,30 @@ export class PlantService {
         userId: user.id,
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
-        // image_src: attachmentId,
         color: createPlantRequestDto.color,
       },
     });
 
-    const result = await this.attachmentService.uploadFile(
-      createPlantRequestDto.imageSrc,
-      plant,
-    );
+    if (createPlantRequestDto.imageSrc) {
+      const result = await this.attachmentService.uploadFile(
+        createPlantRequestDto.imageSrc,
+        plant,
+      );
 
-    console.log('QQQQQQQQQQQ');
-    console.log(plant);
-    console.log(result);
-    console.log('QQQQQQQQQQQ');
+      await this.prisma.plant.update({
+        data: {
+          image_src: result.url,
+        },
+        where: {
+          id: plant.id,
+        },
+      });
+    }
 
     return {
       id: plant.id,
       name: plant.name,
       description: plant.description,
-      imgSrc: plant.image_src,
       createdAt: plant.created_at,
     };
   }

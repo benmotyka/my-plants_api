@@ -5,6 +5,11 @@ import { S3 } from 'aws-sdk';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileUploadException } from './exceptions/FileUpload.exception';
 import { v4 as uuid } from 'uuid';
+import {
+  getBase64EncodedFileType,
+  getRawFileFromBase64EncodedFile,
+} from 'src/util/file';
+import { InvalidFileException } from './exceptions/InvalidFile.exception';
 
 @Injectable()
 export class AttachmentService {
@@ -18,18 +23,25 @@ export class AttachmentService {
     secretAccessKey: this.configService.get('S3_SECRET_KEY'),
   });
 
-  async uploadFile(file: any, plant: Plant): Promise<Attachment> {
+  async uploadFile(
+    base64EncodedFile: string,
+    plant: Plant,
+  ): Promise<Attachment> {
     try {
-      const rawImage = Buffer.from(
-        file.replace(/^data:image\/\w+;base64,/, ''),
-        'base64',
-      );
+      const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
+      if (
+        !availableFileTypes.includes(
+          getBase64EncodedFileType(base64EncodedFile),
+        )
+      ) {
+        throw new InvalidFileException();
+      }
+      const rawImage = getRawFileFromBase64EncodedFile(base64EncodedFile);
 
       const s3Params = {
         Bucket: this.configService.get('S3_BUCKET_NAME'),
         Key: uuid(),
         Body: rawImage,
-        // ACL: 'public-read',
       };
 
       const result = await this.s3Client.upload(s3Params).promise();
