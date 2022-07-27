@@ -43,6 +43,7 @@ export class PlantService {
     createPlantRequestDto: CreatePlantRequestDto,
     user: User,
   ): Promise<PlantResponse> {
+    // @TODO: add transaction
     const plant = await this.prisma.plant.create({
       data: {
         userId: user.id,

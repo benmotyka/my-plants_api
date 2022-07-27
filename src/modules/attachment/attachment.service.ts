@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import {
   getBase64EncodedFileType,
   getRawFileFromBase64EncodedFile,
+  resizeImage
 } from 'src/util/file';
 import { InvalidFileException } from './exceptions/InvalidFile.exception';
 
@@ -36,7 +37,9 @@ export class AttachmentService {
       ) {
         throw new InvalidFileException();
       }
-      const rawImage = getRawFileFromBase64EncodedFile(base64EncodedFile);
+      const resizedImage = await resizeImage(base64EncodedFile)
+
+      const rawImage = getRawFileFromBase64EncodedFile(resizedImage);
 
       const s3Params = {
         Bucket: this.configService.get('S3_BUCKET_NAME'),
