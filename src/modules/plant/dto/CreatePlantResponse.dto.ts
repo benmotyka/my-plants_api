@@ -1,4 +1,4 @@
-import { PlantResponse } from "src/shared/interfaces/PlantResponse.interface";
+import { PlantResponse } from 'src/shared/interfaces/PlantResponse.interface';
 
 export class CreatePlantResponseResponseDto {
   readonly plant: PlantResponse;

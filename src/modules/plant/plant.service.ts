@@ -81,6 +81,7 @@ export class PlantService {
     editPlantRequestDto: EditPlantRequestDto,
     user: User,
   ): Promise<PlantResponse> {
+    // @TODO: add transaction
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: editPlantRequestDto.id,
@@ -92,11 +93,20 @@ export class PlantService {
       throw new BadRequestException('plant-not-found');
     }
 
+    let imageUrl: string;
+    if (editPlantRequestDto.imageSrc) {
+      const result = await this.attachmentService.uploadFile(
+        editPlantRequestDto.imageSrc,
+        plant,
+      );
+      imageUrl = result.url;
+    }
+
     const editedPlant = await this.prisma.plant.update({
       data: {
         name: editPlantRequestDto.name,
         description: editPlantRequestDto.description,
-        image_src: editPlantRequestDto.imageSrc,
+        image_src: imageUrl,
         color: editPlantRequestDto.color,
       },
       where: {

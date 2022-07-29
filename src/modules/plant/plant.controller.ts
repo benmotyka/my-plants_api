@@ -44,7 +44,7 @@ export class PlantController {
     @Request() req,
   ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(
-      `Creating plant for user: ${req.user.username} of name: ${createPlantRequestDto.name}`,
+      `Creating plant for user: ${req.user.username} with name: ${createPlantRequestDto.name}`,
     );
     const plant = await this.plantService.createPlant(
       createPlantRequestDto,
@@ -61,9 +61,7 @@ export class PlantController {
     @Request() req,
   ): Promise<EditPlantResponseResponseDto> {
     this.logger.debug(
-      `Updating plant for user: ${
-        req.user.username
-      } with data: ${JSON.stringify(editPlantRequestDto)}`,
+      `Updating plant for user: ${req.user.username} with name: ${editPlantRequestDto.name}`,
     );
     const plant = await this.plantService.editPlant(
       editPlantRequestDto,
