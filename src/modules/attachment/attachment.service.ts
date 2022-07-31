@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Attachment, Plant } from '@prisma/client';
+import { Attachment, AttachmentType, Plant } from '@prisma/client';
 import { S3 } from 'aws-sdk';
 import { PrismaService } from '../prisma/prisma.service';
 import { FileUploadException } from './exceptions/FileUpload.exception';
@@ -25,21 +25,19 @@ export class AttachmentService {
     secretAccessKey: this.configService.get('S3_SECRET_KEY'),
   });
 
-  async uploadFile(
-    base64EncodedFile: string,
-    plant: Plant,
-  ): Promise<Attachment> {
+  async uploadFile(base64EncodedFile: string): Promise<string> {
     try {
       const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
       const fileType = getBase64EncodedFileType(base64EncodedFile);
-      this.logger.debug(`Starting uploading file of type: ${fileType} for plant of id: ${plant.id}`)
+      this.logger.debug(`Starting uploading file of type: ${fileType}`);
+
       if (!availableFileTypes.includes(fileType)) {
         throw new InvalidFileException();
       }
-      this.logger.debug(`Resizing image`)
+      this.logger.debug(`Resizing image`);
       const resizedImage = await resizeImage(base64EncodedFile);
 
-      this.logger.debug(`Image resized, getting raw image from it`)
+      this.logger.debug(`Image resized, getting raw image data from it`);
       const rawImage = getRawFileFromBase64EncodedFile(resizedImage);
 
       const s3Params = {
@@ -48,20 +46,28 @@ export class AttachmentService {
         Body: rawImage,
       };
 
-      this.logger.debug(`Uploading image to s3`)
+      this.logger.debug(`Uploading image to s3`);
       const result = await this.s3Client.upload(s3Params).promise();
 
-      this.logger.debug(`Creating attachment`)
-      return await this.prisma.attachment.create({
-        data: {
-          plantId: plant.id,
-          url: result.Location,
-          attachment_type: 'plant_picture',
-        },
-      });
+      return result.Location;
     } catch (error) {
-      this.logger.error(error)
+      this.logger.error(error);
       throw new FileUploadException();
     }
+  }
+
+  async createAttachment(
+    plant: Plant,
+    url: string,
+    attachmentType: AttachmentType,
+  ): Promise<Attachment> {
+    this.logger.debug(`Creating attachment`);
+    return await this.prisma.attachment.create({
+      data: {
+        plantId: plant.id,
+        url,
+        attachment_type: attachmentType,
+      },
+    });
   }
 }

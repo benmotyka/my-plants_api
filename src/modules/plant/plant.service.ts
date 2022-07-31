@@ -43,30 +43,29 @@ export class PlantService {
     createPlantRequestDto: CreatePlantRequestDto,
     user: User,
   ): Promise<PlantResponse> {
-    // @TODO: add transaction
+    let imageUrl: string;
+    if (createPlantRequestDto.imageSrc) {
+      imageUrl = await this.attachmentService.uploadFile(
+        createPlantRequestDto.imageSrc,
+      );
+    }
+
     const plant = await this.prisma.plant.create({
       data: {
         userId: user.id,
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
+        image_src: imageUrl,
         color: createPlantRequestDto.color,
       },
     });
 
-    if (createPlantRequestDto.imageSrc) {
-      const result = await this.attachmentService.uploadFile(
-        createPlantRequestDto.imageSrc,
+    if (imageUrl) {
+      await this.attachmentService.createAttachment(
         plant,
+        imageUrl,
+        'plant_picture',
       );
-
-      await this.prisma.plant.update({
-        data: {
-          image_src: result.url,
-        },
-        where: {
-          id: plant.id,
-        },
-      });
     }
 
     return {
@@ -81,7 +80,6 @@ export class PlantService {
     editPlantRequestDto: EditPlantRequestDto,
     user: User,
   ): Promise<PlantResponse> {
-    // @TODO: add transaction
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: editPlantRequestDto.id,
@@ -95,11 +93,9 @@ export class PlantService {
 
     let imageUrl: string;
     if (editPlantRequestDto.imageSrc) {
-      const result = await this.attachmentService.uploadFile(
+      imageUrl = await this.attachmentService.uploadFile(
         editPlantRequestDto.imageSrc,
-        plant,
       );
-      imageUrl = result.url;
     }
 
     const editedPlant = await this.prisma.plant.update({
@@ -113,6 +109,14 @@ export class PlantService {
         id: plant.id,
       },
     });
+
+    if (imageUrl) {
+      await this.attachmentService.createAttachment(
+        plant,
+        imageUrl,
+        'plant_picture',
+      );
+    }
 
     return {
       id: editedPlant.id,
