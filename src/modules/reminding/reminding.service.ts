@@ -14,15 +14,37 @@ export class RemindingService {
     this.logger.debug('Send reminders');
   }
 
-  async createReminder(
-    details: CreateReminderDetails,
-    plant: Plant,
-  ): Promise<Reminder> {
+  async createReminder(details: CreateReminderDetails, plant: Plant) {
     return await this.prisma.reminder.create({
       data: {
         plantId: plant.id,
         frequencyDays: details.frequencyDays,
         reminder_type: details.type,
+      },
+    });
+  }
+
+  async upsertReminderForPlant(details: CreateReminderDetails, plant: Plant) {
+    return await this.prisma.reminder.upsert({
+      where: {
+        plantId: plant.id,
+      },
+      update: {
+        frequencyDays: details.frequencyDays,
+        reminder_type: details.type,
+      },
+      create: {
+        plantId: plant.id,
+        frequencyDays: details.frequencyDays,
+        reminder_type: details.type,
+      },
+    });
+  }
+
+  async deleteRemindersForPlant(plant: Plant) {
+    return await this.prisma.reminder.deleteMany({
+      where: {
+        plantId: plant.id,
       },
     });
   }

@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ResponseType } from 'src/enums/ResponseType.enum';
-import { PlantResponse } from 'src/shared/interfaces/PlantResponse.interface';
+import { PlantResponse } from 'src/shared/interfaces/PlantResponse';
 import { AttachmentService } from '../attachment/attachment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RemindingService } from '../reminding/reminding.service';
@@ -28,6 +28,15 @@ export class PlantService {
           },
           take: 1,
         },
+        reminders: {
+          select: {
+            frequencyDays: true,
+          },
+          where: {
+            reminder_type: 'plant_watering',
+          },
+          take: 1,
+        },
       },
     });
 
@@ -38,6 +47,9 @@ export class PlantService {
       imgSrc: plant.image_src,
       createdAt: plant.created_at,
       latestWatering: plant.watering[0],
+      ...(plant.reminders.length && {
+        wateringReminderFrequency: plant.reminders[0].frequencyDays,
+      }),
     }));
   }
 
@@ -128,6 +140,18 @@ export class PlantService {
         imageUrl,
         'plant_picture',
       );
+    }
+
+    if (editPlantRequestDto.wateringReminderFrequency) {
+      await this.remindingService.upsertReminderForPlant(
+        {
+          frequencyDays: editPlantRequestDto.wateringReminderFrequency,
+          type: 'plant_watering',
+        },
+        plant,
+      );
+    } else {
+      await this.remindingService.deleteRemindersForPlant(plant);
     }
 
     return {
