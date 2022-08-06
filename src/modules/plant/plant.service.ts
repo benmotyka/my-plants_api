@@ -4,6 +4,7 @@ import { ResponseType } from 'src/enums/ResponseType.enum';
 import { PlantResponse } from 'src/shared/interfaces/PlantResponse.interface';
 import { AttachmentService } from '../attachment/attachment.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { RemindingService } from '../reminding/reminding.service';
 import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
 import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
 @Injectable()
@@ -11,6 +12,7 @@ export class PlantService {
   constructor(
     private prisma: PrismaService,
     private attachmentService: AttachmentService,
+    private remindingService: RemindingService,
   ) {}
 
   async getAllPlants(user: User): Promise<PlantResponse[]> {
@@ -65,6 +67,16 @@ export class PlantService {
         plant,
         imageUrl,
         'plant_picture',
+      );
+    }
+
+    if (createPlantRequestDto.wateringReminderFrequency) {
+      await this.remindingService.createReminder(
+        {
+          frequencyDays: createPlantRequestDto.wateringReminderFrequency,
+          type: 'plant_watering',
+        },
+        plant,
       );
     }
 
