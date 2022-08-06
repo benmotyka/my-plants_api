@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  Max,
+  Min,
+} from 'class-validator';
 import { Trim } from 'src/decorators/transform.decorator';
 
 export class CreatePlantRequestDto {
@@ -21,4 +29,10 @@ export class CreatePlantRequestDto {
   @IsOptional()
   @IsString()
   readonly color?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(7)
+  readonly wateringReminderFrequency?: number;
 }

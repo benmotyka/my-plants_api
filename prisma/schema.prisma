@@ -33,6 +33,7 @@ model Plant {
   user        User         @relation(fields: [userId], references: [id])
   watering    Watering[]
   attachments Attachment[]
+  reminders Reminder[]
 
   // "GardenID"?
 }
@@ -59,6 +60,22 @@ model Attachment {
   plant Plant @relation(fields: [plantId], references: [id])
 }
 
+model Reminder {
+  id              String         @id @default(uuid())
+  plantId         String
+  frequencyDays   Int
+  reminder_type   ReminderType
+
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  plant Plant @relation(fields: [plantId], references: [id])
+}
+
 enum AttachmentType {
   plant_picture
+}
+
+enum ReminderType {
+  plant_watering
 }
