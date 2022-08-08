@@ -1,6 +1,7 @@
+import * as dayjs from 'dayjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { Plant, Reminder } from '@prisma/client';
+import { Plant } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDetails } from './interfaces/createReminderDetails';
 
@@ -9,9 +10,40 @@ export class RemindingService {
   constructor(private prisma: PrismaService) {}
   private readonly logger = new Logger(RemindingService.name);
 
-  @Cron('*/30 * * * * *')
-  sendReminders() {
-    this.logger.debug('Send reminders');
+  @Cron('*/10 * * * * *')
+  async sendReminders() {
+    const reminders = await this.getAllUnsentRemindersDetails();
+    for (const reminder of reminders) {
+      if (reminder.plant.watering.length) {
+        const now = dayjs();
+        const lastWatering = dayjs(reminder.plant.watering[0].created_at);
+
+        if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
+          this.logger.debug('Sending reminder for plant:');
+          await this.changeReminderNotifiedStatus(reminder.id, true);
+        }
+      }
+    }
+  }
+
+  async getAllUnsentRemindersDetails() {
+    return await this.prisma.reminder.findMany({
+      where: {
+        notified: false,
+      },
+      include: {
+        plant: {
+          include: {
+            watering: {
+              orderBy: {
+                created_at: 'desc',
+              },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
   }
 
   async createReminder(details: CreateReminderDetails, plant: Plant) {
@@ -20,6 +52,17 @@ export class RemindingService {
         plantId: plant.id,
         frequencyDays: details.frequencyDays,
         reminder_type: details.type,
+      },
+    });
+  }
+
+  async changeReminderNotifiedStatus(reminderId: string, status: boolean) {
+    return await this.prisma.reminder.update({
+      where: {
+        id: reminderId,
+      },
+      data: {
+        notified: status,
       },
     });
   }

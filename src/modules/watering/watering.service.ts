@@ -32,6 +32,8 @@ export class WateringService {
       },
     });
 
+    // @TODO: check if there's any watering and if there is clear notified status
+
     return ResponseType.SUCCESS;
   }
 
