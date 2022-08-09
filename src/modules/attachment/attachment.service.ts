@@ -3,13 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { Attachment, AttachmentType, Plant } from '@prisma/client';
 import { S3 } from 'aws-sdk';
 import { PrismaService } from '../prisma/prisma.service';
-import { FileUploadException } from './exceptions/FileUpload.exception';
 import { v4 as uuid } from 'uuid';
 import {
   getBase64EncodedFileType,
   getRawFileFromBase64EncodedFile,
   resizeImage,
-} from 'src/util/file';
+} from '../../util/file';
 import { InvalidFileException } from './exceptions/InvalidFile.exception';
 
 @Injectable()
@@ -26,7 +25,6 @@ export class AttachmentService {
   });
 
   async uploadFile(base64EncodedFile: string): Promise<string> {
-    try {
       const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
       const fileType = getBase64EncodedFileType(base64EncodedFile);
       this.logger.debug(`Starting uploading file of type: ${fileType}`);
@@ -50,10 +48,6 @@ export class AttachmentService {
       const result = await this.s3Client.upload(s3Params).promise();
 
       return result.Location;
-    } catch (error) {
-      this.logger.error(error);
-      throw new FileUploadException();
-    }
   }
 
   async createAttachment(

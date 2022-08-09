@@ -2,7 +2,7 @@ import * as dayjs from 'dayjs';
 
 import { User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ResponseType } from 'src/enums/ResponseType.enum';
+import { ResponseType } from '../../enums/ResponseType.enum';
 import { PrismaService } from '../prisma/prisma.service';
 import { WaterPlantRequestDto } from './dto/WaterPlantRequest.dto';
 import { WateringData } from './dto/GetAllWateringsForPlantResponse.dto';
