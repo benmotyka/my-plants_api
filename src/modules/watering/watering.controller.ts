@@ -10,7 +10,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { GetAllWateringsForPlantResponseDto } from './dto/GetAllWateringsForPlantResponse.dto';
 import { WaterPlantRequestDto } from './dto/WaterPlantRequest.dto';
 import { WaterPlantResponseDto } from './dto/WaterPlantResponse.dto';
@@ -28,11 +28,16 @@ export class WateringController {
     @Param('plantId') plantId: string,
     @Request() req,
   ): Promise<GetAllWateringsForPlantResponseDto> {
-    this.logger.debug(`Getting all waterings for plant of id: ${plantId} for user: ${req.user.username}`)
+    this.logger.debug(
+      `Getting all waterings for plant of id: ${plantId} for user: ${req.user.username}`,
+    );
 
-    const result = await this.wateringService.getAllWateringsForPlant(plantId, req.user);
+    const result = await this.wateringService.getAllWateringsForPlant(
+      plantId,
+      req.user,
+    );
 
-    return new GetAllWateringsForPlantResponseDto(result)
+    return new GetAllWateringsForPlantResponseDto(result);
   }
 
   @Post('')
@@ -42,10 +47,15 @@ export class WateringController {
     @Body() waterPlantRequestDto: WaterPlantRequestDto,
     @Request() req,
   ): Promise<WaterPlantResponseDto> {
-      this.logger.debug(`Watering plant of id: ${waterPlantRequestDto.plantId} for user: ${req.user.username}`)
+    this.logger.debug(
+      `Watering plant of id: ${waterPlantRequestDto.plantId} for user: ${req.user.username}`,
+    );
 
-      const result = await this.wateringService.waterPlant(waterPlantRequestDto, req.user);
+    const result = await this.wateringService.waterPlant(
+      waterPlantRequestDto,
+      req.user,
+    );
 
-      return new WaterPlantResponseDto(result)
+    return new WaterPlantResponseDto(result);
   }
 }

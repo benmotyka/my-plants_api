@@ -36,7 +36,7 @@ describe('WateringService', () => {
       }).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw bad request exception', async () => {
+    it('should return success', async () => {
       prismaService.plant.findFirst = jest.fn().mockReturnValueOnce('not-null');
       prismaService.watering.create = jest.fn();
 

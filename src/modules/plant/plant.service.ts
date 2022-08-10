@@ -1,7 +1,7 @@
 import { User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ResponseType } from 'src/enums/ResponseType.enum';
-import { PlantResponse } from 'src/shared/interfaces/PlantResponse';
+import { ResponseType } from '../../enums/ResponseType.enum';
+import { PlantResponse } from '../../shared/interfaces/PlantResponse';
 import { AttachmentService } from '../attachment/attachment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RemindingService } from '../reminding/reminding.service';

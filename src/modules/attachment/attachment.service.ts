@@ -25,29 +25,29 @@ export class AttachmentService {
   });
 
   async uploadFile(base64EncodedFile: string): Promise<string> {
-      const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
-      const fileType = getBase64EncodedFileType(base64EncodedFile);
-      this.logger.debug(`Starting uploading file of type: ${fileType}`);
+    const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
+    const fileType = getBase64EncodedFileType(base64EncodedFile);
+    this.logger.debug(`Starting uploading file of type: ${fileType}`);
 
-      if (!availableFileTypes.includes(fileType)) {
-        throw new InvalidFileException();
-      }
-      this.logger.debug(`Resizing image`);
-      const resizedImage = await resizeImage(base64EncodedFile);
+    if (!availableFileTypes.includes(fileType)) {
+      throw new InvalidFileException();
+    }
+    this.logger.debug(`Resizing image`);
+    const resizedImage = await resizeImage(base64EncodedFile);
 
-      this.logger.debug(`Image resized, getting raw image data from it`);
-      const rawImage = getRawFileFromBase64EncodedFile(resizedImage);
+    this.logger.debug(`Image resized, getting raw image data from it`);
+    const rawImage = getRawFileFromBase64EncodedFile(resizedImage);
 
-      const s3Params = {
-        Bucket: this.configService.get('S3_BUCKET_NAME'),
-        Key: uuid(),
-        Body: rawImage,
-      };
+    const s3Params = {
+      Bucket: this.configService.get('S3_BUCKET_NAME'),
+      Key: uuid(),
+      Body: rawImage,
+    };
 
-      this.logger.debug(`Uploading image to s3`);
-      const result = await this.s3Client.upload(s3Params).promise();
+    this.logger.debug(`Uploading image to s3`);
+    const result = await this.s3Client.upload(s3Params).promise();
 
-      return result.Location;
+    return result.Location;
   }
 
   async createAttachment(

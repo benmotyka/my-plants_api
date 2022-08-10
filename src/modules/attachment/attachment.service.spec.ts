@@ -27,6 +27,7 @@ describe('AttachmentService', () => {
       }).rejects.toThrow(InvalidFileException);
     });
 
+    // @TODO: mock s3
     // it('should upload file successfully', async () => {
     //   jest.spyOn(fileUtils, 'getBase64EncodedFileType').mockReturnValue('png');
 
