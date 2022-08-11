@@ -1,11 +1,12 @@
 import { Request } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { ResponseType } from '../../enums/ResponseType.enum';
-import { PrismaService } from '../prisma/prisma.service';
-import { GetAllWateringsForPlantResponseDto } from './dto/GetAllWateringsForPlantResponse.dto';
-import { WaterPlantResponseDto } from './dto/WaterPlantResponse.dto';
-import { WateringController } from './watering.controller';
-import { WateringService } from './watering.service';
+
+import { ResponseType } from '../../src/enums/ResponseType.enum';
+import { PrismaService } from '../../src/modules/prisma/prisma.service';
+import { GetAllWateringsForPlantResponseDto } from '../../src/modules/watering/dto/GetAllWateringsForPlantResponse.dto';
+import { WaterPlantResponseDto } from '../../src/modules/watering/dto/WaterPlantResponse.dto';
+import { WateringController } from '../../src/modules/watering/watering.controller';
+import { WateringService } from '../../src/modules/watering/watering.service';
 
 describe('CatsController', () => {
   let wateringController: WateringController;
