@@ -7,7 +7,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { Trim } from 'src/decorators/transform.decorator';
+import { Trim } from '@decorators/transform.decorator';
 
 export class CreatePlantRequestDto {
   @Trim()

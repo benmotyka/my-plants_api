@@ -1,6 +1,6 @@
 import * as sharp from 'sharp';
 
-const RESIZED_IMAGE_SIZE_PX = 300
+const RESIZED_IMAGE_SIZE_PX = 300;
 
 export const getBase64EncodedFileType = (encodedFile: string): string => {
   const [, type] = encodedFile.split(';')[0].split('/');
@@ -18,12 +18,14 @@ export const resizeImage = async (encodedFile: string): Promise<string> => {
 
     const img = Buffer.from(imageData, 'base64');
 
-    const resizedImageBuffer = await sharp(img).resize(RESIZED_IMAGE_SIZE_PX, RESIZED_IMAGE_SIZE_PX).toBuffer();
+    const resizedImageBuffer = await sharp(img)
+      .resize(RESIZED_IMAGE_SIZE_PX, RESIZED_IMAGE_SIZE_PX)
+      .toBuffer();
 
     const resizedImageData = resizedImageBuffer.toString('base64');
     return `data:${mimType};base64,${resizedImageData}`;
   } catch (error) {
     console.log(error);
-    throw new Error('error-resizing-image')
+    throw new Error('error-resizing-image');
   }
 };

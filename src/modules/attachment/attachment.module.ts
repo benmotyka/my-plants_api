@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AttachmentService } from './attachment.service';
 import { ConfigModule } from '@nestjs/config';
+
+import { AttachmentService } from '@modules/attachment/attachment.service';
 
 @Module({
   imports: [ConfigModule],

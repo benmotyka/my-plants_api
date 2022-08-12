@@ -1,5 +1,6 @@
 import { IsArray } from 'class-validator';
-import { PlantResponse } from 'src/shared/interfaces/PlantResponse';
+
+import { PlantResponse } from '@shared/interfaces/PlantResponse';
 
 export class GetAllPlantsResponseDto {
   @IsArray()

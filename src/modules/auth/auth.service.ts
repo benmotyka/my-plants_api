@@ -1,13 +1,14 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, Logger } from '@nestjs/common';
-import { User } from '.prisma/client';
-import { UserService } from '../user/user.service';
-import { JwtService } from '@nestjs/jwt';
-import { LoginResponseDto } from './dto/LoginResponse.dto';
-import { ResponseType } from 'src/enums/ResponseType.enum';
-import { RegisterRequestDto } from './dto/RegisterRequest.dto';
-import { ExistingUsernameException } from './exceptions/ExistingUsername.exception';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '.prisma/client';
+
+import { UserService } from '@modules/user/user.service';
+import { LoginResponseDto } from '@modules/auth/dto/LoginResponse.dto';
+import { RegisterRequestDto } from '@modules/auth/dto/RegisterRequest.dto';
+import { ExistingUsernameException } from '@modules/auth/exceptions/ExistingUsername.exception';
+import { ResponseType } from '@enums/ResponseType.enum';
 
 @Injectable()
 export class AuthService {

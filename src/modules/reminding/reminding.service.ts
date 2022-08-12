@@ -2,8 +2,9 @@ import * as dayjs from 'dayjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { Plant } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateReminderDetails } from './interfaces/createReminderDetails';
+
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { CreateReminderDetails } from '@modules/reminding/interfaces/createReminderDetails';
 
 @Injectable()
 export class RemindingService {

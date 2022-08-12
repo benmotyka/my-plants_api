@@ -1,12 +1,12 @@
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import { json } from 'body-parser';
 import {
   HttpStatus,
   BadRequestException,
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
-import { json } from 'body-parser';
 
 import { AppModule } from './app.module';
 

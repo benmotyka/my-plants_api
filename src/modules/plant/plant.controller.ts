@@ -12,14 +12,15 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
-import { CreatePlantResponseResponseDto } from './dto/CreatePlantResponse.dto';
-import { DeletePlantResponseDto } from './dto/DeletePlantResponse.dto';
-import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
-import { EditPlantResponseResponseDto } from './dto/EditPlantResponseResponse.dto';
-import { GetAllPlantsResponseDto } from './dto/GetAllPlantsResponse.dto';
-import { PlantService } from './plant.service';
+
+import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
+import { CreatePlantResponseResponseDto } from '@modules/plant/dto/CreatePlantResponse.dto';
+import { DeletePlantResponseDto } from '@modules/plant/dto/DeletePlantResponse.dto';
+import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
+import { EditPlantResponseResponseDto } from '@modules/plant/dto/EditPlantResponseResponse.dto';
+import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse.dto';
+import { PlantService } from '@modules/plant/plant.service';
 
 @Controller('plants')
 export class PlantController {

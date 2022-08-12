@@ -1,4 +1,4 @@
 export interface DecodedJwt {
-    userId: string;
-    username: string;
+  userId: string;
+  username: string;
 }

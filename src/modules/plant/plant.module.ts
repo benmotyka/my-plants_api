@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AttachmentModule } from '../attachment/attachment.module';
-import { RemindingModule } from '../reminding/reminding.module';
-import { PlantController } from './plant.controller';
-import { PlantService } from './plant.service';
+import { AttachmentModule } from '@modules/attachment/attachment.module';
+import { RemindingModule } from '@modules/reminding/reminding.module';
+import { PlantController } from '@modules/plant/plant.controller';
+import { PlantService } from '@modules/plant/plant.service';
 
 @Module({
   imports: [AttachmentModule, RemindingModule],

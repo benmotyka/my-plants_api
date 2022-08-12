@@ -1,12 +1,14 @@
-import { User } from '.prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ResponseType } from '../../enums/ResponseType.enum';
-import { PlantResponse } from '../../shared/interfaces/PlantResponse';
-import { AttachmentService } from '../attachment/attachment.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { RemindingService } from '../reminding/reminding.service';
-import { CreatePlantRequestDto } from './dto/CreatePlantRequest.dto';
-import { EditPlantRequestDto } from './dto/EditPlantRequest.dto';
+import { User } from '.prisma/client';
+
+import { ResponseType } from '@enums/ResponseType.enum';
+import { PlantResponse } from '@shared/interfaces/PlantResponse';
+import { AttachmentService } from '@modules/attachment/attachment.service';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { RemindingService } from '@modules/reminding/reminding.service';
+import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
+import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
+
 @Injectable()
 export class PlantService {
   constructor(

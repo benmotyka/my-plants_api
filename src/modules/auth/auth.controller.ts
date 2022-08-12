@@ -7,11 +7,12 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from 'src/guards/local-auth.guard';
-import { AuthService } from './auth.service';
-import { LoginResponseDto } from './dto/LoginResponse.dto';
-import { RegisterRequestDto } from './dto/RegisterRequest.dto';
-import { RegisterResponseDto } from './dto/RegisterResponse.dto';
+
+import { LocalAuthGuard } from '@guards/local-auth.guard';
+import { AuthService } from '@modules/auth/auth.service';
+import { LoginResponseDto } from '@modules/auth/dto/LoginResponse.dto';
+import { RegisterRequestDto } from '@modules/auth/dto/RegisterRequest.dto';
+import { RegisterResponseDto } from '@modules/auth/dto/RegisterResponse.dto';
 
 @Controller('auth')
 export class AuthController {

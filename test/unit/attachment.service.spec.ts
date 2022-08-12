@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 
-import { AttachmentService } from '../../src/modules/attachment/attachment.service';
-import * as fileUtils from '../../src/util/file';
-import { PrismaService } from '../../src/modules/prisma/prisma.service';
-import { InvalidFileException } from '../../src/modules/attachment/exceptions/InvalidFile.exception';
+import { AttachmentService } from '@modules/attachment/attachment.service';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { InvalidFileException } from '@modules/attachment/exceptions/InvalidFile.exception';
+import * as fileUtils from '@util/file';
 
 describe('AttachmentService', () => {
   let attachmentService: AttachmentService;

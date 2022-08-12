@@ -10,11 +10,12 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
-import { GetAllWateringsForPlantResponseDto } from './dto/GetAllWateringsForPlantResponse.dto';
-import { WaterPlantRequestDto } from './dto/WaterPlantRequest.dto';
-import { WaterPlantResponseDto } from './dto/WaterPlantResponse.dto';
-import { WateringService } from './watering.service';
+
+import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
+import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
+import { WaterPlantResponseDto } from '@modules/watering/dto/WaterPlantResponse.dto';
+import { WateringService } from '@modules/watering/watering.service';
 
 @Controller('watering')
 export class WateringController {

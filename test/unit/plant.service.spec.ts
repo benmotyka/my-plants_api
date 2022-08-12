@@ -2,10 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { Plant, User } from '@prisma/client';
 
-import { AttachmentService } from '../../src/modules/attachment/attachment.service';
-import { PrismaService } from '../../src/modules/prisma/prisma.service';
-import { RemindingService } from '../../src/modules/reminding/reminding.service';
-import { PlantService } from '../../src/modules/plant/plant.service';
+import { AttachmentService } from '@modules/attachment/attachment.service';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { RemindingService } from '@modules/reminding/reminding.service';
+import { PlantService } from '@modules/plant/plant.service';
 
 describe('PlantService', () => {
   let plantService: PlantService;

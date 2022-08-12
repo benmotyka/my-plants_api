@@ -1,11 +1,11 @@
 import * as dayjs from 'dayjs';
-
 import { User } from '.prisma/client';
+
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ResponseType } from '../../enums/ResponseType.enum';
-import { PrismaService } from '../prisma/prisma.service';
-import { WaterPlantRequestDto } from './dto/WaterPlantRequest.dto';
-import { WateringData } from './dto/GetAllWateringsForPlantResponse.dto';
+import { ResponseType } from '@enums/ResponseType.enum';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
+import { WateringData } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
 
 @Injectable()
 export class WateringService {

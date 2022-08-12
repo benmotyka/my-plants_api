@@ -1,15 +1,16 @@
+import { S3 } from 'aws-sdk';
+import { v4 as uuid } from 'uuid';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Attachment, AttachmentType, Plant } from '@prisma/client';
-import { S3 } from 'aws-sdk';
-import { PrismaService } from '../prisma/prisma.service';
-import { v4 as uuid } from 'uuid';
+
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { InvalidFileException } from '@modules/attachment/exceptions/InvalidFile.exception';
 import {
   getBase64EncodedFileType,
   getRawFileFromBase64EncodedFile,
   resizeImage,
-} from '../../util/file';
-import { InvalidFileException } from './exceptions/InvalidFile.exception';
+} from '@util/file';
 
 @Injectable()
 export class AttachmentService {

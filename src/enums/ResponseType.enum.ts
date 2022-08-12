@@ -1,3 +1,3 @@
 export enum ResponseType {
-    SUCCESS = 'success'
+  SUCCESS = 'success',
 }

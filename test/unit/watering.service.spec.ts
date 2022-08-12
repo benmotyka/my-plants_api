@@ -1,10 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-
 import { User } from '.prisma/client';
-import { ResponseType } from '../../src/enums/ResponseType.enum';
-import { PrismaService } from '../../src/modules/prisma/prisma.service';
-import { WateringService } from '../../src/modules/watering/watering.service';
+
+import { ResponseType } from '@enums/ResponseType.enum';
+import { PrismaService } from '@modules/prisma/prisma.service';
+import { WateringService } from '@modules/watering/watering.service';
 
 describe('WateringService', () => {
   let wateringService: WateringService;
