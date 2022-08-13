@@ -41,6 +41,8 @@ describe('CatsController', () => {
       expect(
         await wateringController.getAllWateringsForPlant('plantId', req),
       ).toStrictEqual(new GetAllWateringsForPlantResponseDto(result));
+
+      expect(wateringService.getAllWateringsForPlant).toBeCalled();
     });
   });
 
@@ -54,6 +56,8 @@ describe('CatsController', () => {
       expect(
         await wateringController.waterPlant({ plantId: 'plantId' }, req),
       ).toStrictEqual(new WaterPlantResponseDto(result));
+
+      expect(wateringService.waterPlant).toBeCalled();
     });
   });
 });

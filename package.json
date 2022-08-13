@@ -79,7 +79,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
+    "rootDir": "./",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -88,7 +88,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@modules/(.*)$": "<rootDir>/src/modules/$1",
+      "@guards/(.*)$": "<rootDir>/src/guards/$1",
+      "@util/(.*)$": "<rootDir>/src/util/$1",
+      "@decorators/(.*)$": "<rootDir>/src/decorators/$1",
+      "@enums/(.*)$": "<rootDir>/src/enums/$1",
+      "@shared/(.*)$": "<rootDir>/src/shared/$1"
+    }
   },
   "engines": {
     "node": "16.13.2"

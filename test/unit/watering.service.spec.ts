@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import * as dayjs from 'dayjs';
 import { User } from '.prisma/client';
 
 import { ResponseType } from '@enums/ResponseType.enum';
@@ -35,6 +36,8 @@ describe('WateringService', () => {
       expect(async () => {
         await wateringService.waterPlant({ plantId: 'id' }, mockUser);
       }).rejects.toThrow(BadRequestException);
+
+      expect(prismaService.plant.findFirst).toBeCalled();
     });
 
     it('should return success', async () => {
@@ -44,6 +47,52 @@ describe('WateringService', () => {
       expect(
         await wateringService.waterPlant({ plantId: 'id' }, mockUser),
       ).toBe(ResponseType.SUCCESS);
+
+      expect(prismaService.plant.findFirst).toBeCalled();
+      expect(prismaService.watering.create).toBeCalled();
+    });
+  });
+
+  describe('getAllWateringsForPlant', () => {
+    it('should throw bad request exception', async () => {
+      prismaService.plant.findFirst = jest.fn().mockReturnValueOnce(null);
+
+      expect(async () => {
+        await wateringService.getAllWateringsForPlant('id', mockUser);
+      }).rejects.toThrow(BadRequestException);
+
+      expect(prismaService.plant.findFirst).toBeCalled();
+    });
+
+    it('should return no waterings (empty object)', async () => {
+      prismaService.plant.findFirst = jest.fn().mockReturnValueOnce('not-null');
+      prismaService.watering.findMany = jest.fn().mockReturnValueOnce([]);
+
+      expect(
+        await wateringService.getAllWateringsForPlant('id', mockUser),
+      ).toStrictEqual({});
+
+      expect(prismaService.plant.findFirst).toBeCalled();
+      expect(prismaService.watering.findMany).toBeCalled();
+    });
+
+    it('should return waterings', async () => {
+      const date = new Date();
+      prismaService.plant.findFirst = jest.fn().mockReturnValueOnce('not-null');
+      prismaService.watering.findMany = jest.fn().mockReturnValueOnce([
+        {
+          created_at: date,
+        },
+      ]);
+
+      expect(
+        await wateringService.getAllWateringsForPlant('id', mockUser),
+      ).toStrictEqual({
+        [dayjs(date).format('YYYY-MM-DD')]: [date],
+      });
+
+      expect(prismaService.plant.findFirst).toBeCalled();
+      expect(prismaService.watering.findMany).toBeCalled();
     });
   });
 });
