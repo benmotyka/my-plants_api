@@ -84,7 +84,7 @@ export class AuthService {
       `Login successful for username: ${user.username}, generating access token for username`,
     );
     return {
-      access_token: this.jwtService.sign({
+      accessToken: this.jwtService.sign({
         username: user.username,
         sub: user.id,
       }),
