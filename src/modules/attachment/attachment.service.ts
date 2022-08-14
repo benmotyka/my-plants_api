@@ -61,7 +61,7 @@ export class AttachmentService {
       data: {
         plantId: plant.id,
         url,
-        attachment_type: attachmentType,
+        attachmentType,
       },
     });
   }

@@ -54,26 +54,26 @@ export class WateringService {
 
     const waterings = await this.prisma.watering.findMany({
       select: {
-        created_at: true,
+        createdAt: true,
       },
       where: {
         plantId: plant.id,
       },
       orderBy: {
-        created_at: 'desc',
+        createdAt: 'desc',
       },
     });
 
     let response: WateringData = {};
     waterings.forEach((item) => {
-      const day = dayjs(item.created_at).format('YYYY-MM-DD');
+      const day = dayjs(item.createdAt).format('YYYY-MM-DD');
       if (!response[day]) {
         response = {
           ...response,
           [day]: [],
         };
       }
-      response[day].push(item.created_at);
+      response[day].push(item.createdAt);
     });
 
     return response;

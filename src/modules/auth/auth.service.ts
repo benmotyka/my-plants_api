@@ -67,7 +67,8 @@ export class AuthService {
     this.logger.debug(
       `Username: ${registerRequestDto.username} seems to be unique, creating new user`,
     );
-    const user = await this.userService.createUser({
+
+    await this.userService.createUser({
       username: registerRequestDto.username,
       password: this.generateHash(registerRequestDto.password),
     });
