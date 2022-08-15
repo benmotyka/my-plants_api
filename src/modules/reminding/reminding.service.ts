@@ -17,7 +17,7 @@ export class RemindingService {
     for (const reminder of reminders) {
       if (reminder.plant.watering.length) {
         const now = dayjs();
-        const lastWatering = dayjs(reminder.plant.watering[0].created_at);
+        const lastWatering = dayjs(reminder.plant.watering[0].createdAt);
 
         if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
           this.logger.debug('Sending reminder for plant:');
@@ -37,7 +37,7 @@ export class RemindingService {
           include: {
             watering: {
               orderBy: {
-                created_at: 'desc',
+                createdAt: 'desc',
               },
               take: 1,
             },
@@ -52,7 +52,7 @@ export class RemindingService {
       data: {
         plantId: plant.id,
         frequencyDays: details.frequencyDays,
-        reminder_type: details.type,
+        reminderType: details.type,
       },
     });
   }
@@ -75,12 +75,12 @@ export class RemindingService {
       },
       update: {
         frequencyDays: details.frequencyDays,
-        reminder_type: details.type,
+        reminderType: details.type,
       },
       create: {
         plantId: plant.id,
         frequencyDays: details.frequencyDays,
-        reminder_type: details.type,
+        reminderType: details.type,
       },
     });
   }

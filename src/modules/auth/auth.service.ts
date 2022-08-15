@@ -67,7 +67,8 @@ export class AuthService {
     this.logger.debug(
       `Username: ${registerRequestDto.username} seems to be unique, creating new user`,
     );
-    const user = await this.userService.createUser({
+
+    await this.userService.createUser({
       username: registerRequestDto.username,
       password: this.generateHash(registerRequestDto.password),
     });
@@ -83,7 +84,7 @@ export class AuthService {
       `Login successful for username: ${user.username}, generating access token for username`,
     );
     return {
-      access_token: this.jwtService.sign({
+      accessToken: this.jwtService.sign({
         username: user.username,
         sub: user.id,
       }),

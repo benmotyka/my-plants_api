@@ -23,9 +23,9 @@ describe('WateringService', () => {
       id: '123',
       username: 'username',
       password: 'password',
-      created_at: new Date(),
-      updated_at: new Date(),
-      deleted_at: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
     };
   });
 
@@ -81,7 +81,7 @@ describe('WateringService', () => {
       prismaService.plant.findFirst = jest.fn().mockReturnValueOnce('not-null');
       prismaService.watering.findMany = jest.fn().mockReturnValueOnce([
         {
-          created_at: date,
+          createdAt: date,
         },
       ]);
 

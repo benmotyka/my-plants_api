@@ -21,12 +21,12 @@ export class PlantService {
     const plants = await this.prisma.plant.findMany({
       where: {
         userId: user.id,
-        deleted_at: null,
+        deletedAt: null,
       },
       include: {
         watering: {
           orderBy: {
-            created_at: 'desc',
+            createdAt: 'desc',
           },
           take: 1,
         },
@@ -35,7 +35,7 @@ export class PlantService {
             frequencyDays: true,
           },
           where: {
-            reminder_type: 'plant_watering',
+            reminderType: 'plant_watering',
           },
           take: 1,
         },
@@ -46,8 +46,8 @@ export class PlantService {
       id: plant.id,
       name: plant.name,
       description: plant.description,
-      imgSrc: plant.image_src,
-      createdAt: plant.created_at,
+      imgSrc: plant.imageSrc,
+      createdAt: plant.createdAt,
       latestWatering: plant.watering[0],
       ...(plant.reminders.length && {
         wateringReminderFrequency: plant.reminders[0].frequencyDays,
@@ -71,7 +71,7 @@ export class PlantService {
         userId: user.id,
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
-        image_src: imageUrl,
+        imageSrc: imageUrl,
         color: createPlantRequestDto.color,
       },
     });
@@ -98,7 +98,7 @@ export class PlantService {
       id: plant.id,
       name: plant.name,
       description: plant.description,
-      createdAt: plant.created_at,
+      createdAt: plant.createdAt,
     };
   }
 
@@ -128,7 +128,7 @@ export class PlantService {
       data: {
         name: editPlantRequestDto.name,
         description: editPlantRequestDto.description,
-        image_src: imageUrl,
+        imageSrc: imageUrl,
         color: editPlantRequestDto.color,
       },
       where: {
@@ -160,8 +160,8 @@ export class PlantService {
       id: editedPlant.id,
       name: editedPlant.name,
       description: editedPlant.description,
-      imgSrc: editedPlant.image_src,
-      createdAt: editedPlant.created_at,
+      imgSrc: editedPlant.imageSrc,
+      createdAt: editedPlant.createdAt,
     };
   }
 
@@ -179,7 +179,7 @@ export class PlantService {
 
     await this.prisma.plant.update({
       data: {
-        deleted_at: new Date(),
+        deletedAt: new Date(),
       },
       where: {
         id: id,
