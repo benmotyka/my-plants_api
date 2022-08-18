@@ -8,13 +8,16 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  username  String    @unique
-  password  String
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  deletedAt DateTime? @map("deleted_at")
-  plants    Plant[]
+  id             String    @id @default(uuid())
+  username       String    @unique
+  password       String
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt      DateTime? @map("deleted_at")
+  userSettingsId String    @unique
+
+  plants       Plant[]
+  userSettings UserSettings? @relation(fields: [userSettingsId], references: [id])
 
   // email, accountConfirmed ?
   @@map("users")
@@ -79,6 +82,18 @@ model Reminder {
   plant Plant @relation(fields: [plantId], references: [id])
 
   @@map("reminders")
+}
+
+model UserSettings {
+  id                       String  @id @default(uuid())
+  userId                   String  @unique @map("plant_id")
+  pushNotificationsEnabled Boolean @default(true)
+
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  User User?
+
+  @@map("user_settings")
 }
 
 enum AttachmentType {
