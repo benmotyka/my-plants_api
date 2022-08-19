@@ -4,6 +4,7 @@ import { User } from '.prisma/client';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUser } from '@modules/user/interfaces/CreateUser';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
+import { ResponseType } from '@enums/ResponseType.enum';
 
 @Injectable()
 export class UserService {
@@ -37,7 +38,20 @@ export class UserService {
     });
   }
 
-  async upsertSettings(settings: UpsertSettingsRequestDto) {
+  async upsertSettings(settings: UpsertSettingsRequestDto, user: User) {
+    await this.prisma.userSettings.upsert({
+      where: {
+        userId: user.id,
+      },
+      update: {
+        pushNotificationsEnabled: settings.pushNotificationsEnabled,
+      },
+      create: {
+        userId: user.id,
+        pushNotificationsEnabled: settings.pushNotificationsEnabled,
+      },
+    });
 
+    return ResponseType.SUCCESS;
   }
 }
