@@ -38,6 +38,17 @@ export class UserService {
     });
   }
 
+  async getUserSettings(user: User) {
+    return await this.prisma.userSettings.findFirst({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        pushNotificationsEnabled: true,
+      },
+    });
+  }
+
   async upsertSettings(settings: UpsertSettingsRequestDto, user: User) {
     await this.prisma.userSettings.upsert({
       where: {

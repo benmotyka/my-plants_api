@@ -79,15 +79,19 @@ export class AuthService {
     return ResponseType.SUCCESS;
   }
 
-  login(user: User): LoginResponseDto {
+  async login(user: User): Promise<LoginResponseDto> {
     this.logger.debug(
       `Login successful for username: ${user.username}, generating access token for username`,
     );
+
+    const userSettings = await this.userService.getUserSettings(user);
+
     return {
       accessToken: this.jwtService.sign({
         username: user.username,
         sub: user.id,
       }),
+      userSettings,
     };
   }
 
