@@ -16,8 +16,9 @@ model User {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at")
 
-  plants       Plant[]
-  userSettings UserSettings?
+  plants            Plant[]
+  userSettings      UserSettings?
+  VerificationCodes VerificationCodes[]
 
   // email, accountConfirmed ?
   @@map("users")
@@ -96,10 +97,30 @@ model UserSettings {
   @@map("user_settings")
 }
 
+model VerificationCodes {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  type   VerificationType
+  code   String
+  active Boolean          @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("verification_codes")
+}
+
 enum AttachmentType {
   plant_picture
 }
 
 enum ReminderType {
   plant_watering
+}
+
+enum VerificationType {
+  EMAIL_CONFIRMATION
 }
