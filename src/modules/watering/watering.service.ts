@@ -6,6 +6,7 @@ import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
 import { WateringData } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class WateringService {
@@ -23,7 +24,7 @@ export class WateringService {
     });
 
     if (!plant) {
-      throw new BadRequestException('plant-not-found');
+      throw new BadRequestException(Exception.INVALID_PLANT);
     }
 
     await this.prisma.watering.create({
@@ -49,7 +50,7 @@ export class WateringService {
     });
 
     if (!plant) {
-      throw new BadRequestException('plant-not-found');
+      throw new BadRequestException(Exception.INVALID_PLANT);
     }
 
     const waterings = await this.prisma.watering.findMany({

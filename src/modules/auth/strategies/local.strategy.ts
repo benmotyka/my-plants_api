@@ -4,6 +4,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { AuthService } from '@modules/auth/auth.service';
 import { User } from '.prisma/client';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -20,7 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       throw new HttpException(
         {
           status: HttpStatus.UNAUTHORIZED,
-          message: 'invalid-credentials',
+          message: Exception.INVALID_CREDENTIALS,
         },
         HttpStatus.UNAUTHORIZED,
       );

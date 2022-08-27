@@ -1,5 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '.prisma/client';
@@ -7,7 +12,6 @@ import { User } from '.prisma/client';
 import { UserService } from '@modules/user/user.service';
 import { LoginResponseDto } from '@modules/auth/dto/LoginResponse.dto';
 import { RegisterRequestDto } from '@modules/auth/dto/RegisterRequest.dto';
-import { ExistingUsernameException } from '@modules/auth/exceptions/ExistingUsername.exception';
 import { ResponseType } from '@enums/ResponseType';
 import { ChangePasswordRequestDto } from './dto/ChangePasswordRequest.dto';
 import { Exception } from '@enums/Exception';
@@ -79,7 +83,7 @@ export class AuthService {
       this.logger.debug(
         `Username: ${registerRequestDto.username} exists, throwing exception`,
       );
-      throw new ExistingUsernameException();
+      throw new ForbiddenException(Exception.INVALID_USERNAME);
     }
 
     this.logger.debug(

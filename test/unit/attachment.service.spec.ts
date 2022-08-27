@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 
 import { AttachmentService } from '@modules/attachment/attachment.service';
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { InvalidFileException } from '@modules/attachment/exceptions/InvalidFile.exception';
 import * as fileUtils from '@util/file';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AttachmentService', () => {
   let attachmentService: AttachmentService;
@@ -25,7 +25,7 @@ describe('AttachmentService', () => {
 
       expect(async () => {
         await attachmentService.uploadFile('file');
-      }).rejects.toThrow(InvalidFileException);
+      }).rejects.toThrow(BadRequestException);
     });
 
     // @TODO: mock s3

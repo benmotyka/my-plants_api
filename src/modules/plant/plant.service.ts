@@ -8,6 +8,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 import { RemindingService } from '@modules/reminding/reminding.service';
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class PlantService {
@@ -114,7 +115,7 @@ export class PlantService {
     });
 
     if (!plant) {
-      throw new BadRequestException('plant-not-found');
+      throw new BadRequestException(Exception.INVALID_PLANT);
     }
 
     let imageUrl: string;
@@ -174,7 +175,7 @@ export class PlantService {
     });
 
     if (!plant) {
-      throw new BadRequestException('plant-not-found');
+      throw new BadRequestException(Exception.INVALID_PLANT);
     }
 
     await this.prisma.plant.update({

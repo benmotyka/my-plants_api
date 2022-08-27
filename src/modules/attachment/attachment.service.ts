@@ -1,16 +1,16 @@
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Attachment, AttachmentType, Plant } from '@prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { InvalidFileException } from '@modules/attachment/exceptions/InvalidFile.exception';
 import {
   getBase64EncodedFileType,
   getRawFileFromBase64EncodedFile,
   resizeImage,
 } from '@util/file';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class AttachmentService {
@@ -31,7 +31,7 @@ export class AttachmentService {
     this.logger.debug(`Starting uploading file of type: ${fileType}`);
 
     if (!availableFileTypes.includes(fileType)) {
-      throw new InvalidFileException();
+      throw new BadRequestException(Exception.INVALID_FILE);
     }
     this.logger.debug(`Resizing image`);
     const resizedImage = await resizeImage(base64EncodedFile);
