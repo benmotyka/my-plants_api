@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '.prisma/client';
@@ -8,7 +8,9 @@ import { UserService } from '@modules/user/user.service';
 import { LoginResponseDto } from '@modules/auth/dto/LoginResponse.dto';
 import { RegisterRequestDto } from '@modules/auth/dto/RegisterRequest.dto';
 import { ExistingUsernameException } from '@modules/auth/exceptions/ExistingUsername.exception';
-import { ResponseType } from '@enums/ResponseType.enum';
+import { ResponseType } from '@enums/ResponseType';
+import { ChangePasswordRequestDto } from './dto/ChangePasswordRequest.dto';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,25 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
   private readonly logger = new Logger(AuthService.name);
+
+  compareUserPassword(password: string, user: User) {
+    return bcrypt.compareSync(
+      password + this.configService.get('SALT'),
+      user.password,
+    );
+  }
+
+  async changePassword(
+    { oldPassword, newPassword }: ChangePasswordRequestDto,
+    user: User,
+  ) {
+    const passwordMatch = this.compareUserPassword(oldPassword, user);
+    if (!passwordMatch)
+      throw new BadRequestException(Exception.INVALID_CREDENTIALS);
+
+    await this.userService.updatePassword(this.generateHash(newPassword), user);
+    return ResponseType.SUCCESS;
+  }
 
   async validateUser(
     username: string,
@@ -30,10 +51,7 @@ export class AuthService {
       this.logger.debug(
         `Found user: ${username}, checking if password matches`,
       );
-      const passwordMatch = bcrypt.compareSync(
-        plainTextPass + this.configService.get('SALT'),
-        user.password,
-      );
+      const passwordMatch = this.compareUserPassword(plainTextPass, user);
 
       if (passwordMatch) {
         this.logger.debug(

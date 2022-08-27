@@ -4,7 +4,7 @@ import { User } from '.prisma/client';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUser } from '@modules/user/interfaces/CreateUser';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
-import { ResponseType } from '@enums/ResponseType.enum';
+import { ResponseType } from '@enums/ResponseType';
 
 @Injectable()
 export class UserService {
@@ -64,5 +64,16 @@ export class UserService {
     });
 
     return ResponseType.SUCCESS;
+  }
+
+  async updatePassword(password: string, user: User) {
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password,
+      },
+    });
   }
 }

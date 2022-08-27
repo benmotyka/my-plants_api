@@ -1,7 +1,6 @@
-import { Request } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 
-import { ResponseType } from '@enums/ResponseType.enum';
+import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
 import { WaterPlantResponseDto } from '@modules/watering/dto/WaterPlantResponse.dto';

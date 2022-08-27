@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '.prisma/client';
 
-import { ResponseType } from '@enums/ResponseType.enum';
+import { ResponseType } from '@enums/ResponseType';
 import { PlantResponse } from '@shared/interfaces/PlantResponse';
 import { AttachmentService } from '@modules/attachment/attachment.service';
 import { PrismaService } from '@modules/prisma/prisma.service';
