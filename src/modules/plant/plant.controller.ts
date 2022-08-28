@@ -21,7 +21,9 @@ import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { EditPlantResponseResponseDto } from '@modules/plant/dto/EditPlantResponseResponse.dto';
 import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse.dto';
 import { PlantService } from '@modules/plant/plant.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Plants')
 @Controller('plants')
 export class PlantController {
   constructor(private readonly plantService: PlantService) {}

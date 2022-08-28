@@ -1,6 +1,7 @@
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { json } from 'body-parser';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
   HttpStatus,
   BadRequestException,
@@ -31,6 +32,11 @@ async function bootstrap() {
   );
   app.use(helmet());
   app.use(json({ limit: '20mb' }));
+
+  const config = new DocumentBuilder().setTitle('My Plants API').build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
