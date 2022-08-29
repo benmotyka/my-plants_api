@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { User } from '.prisma/client';
 
 import { BadRequestException, Injectable } from '@nestjs/common';

@@ -2,7 +2,7 @@ import { ResponseType } from '@enums/ResponseType';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class ChangePasswordResponseDto {
+export class UpsertSettingsResponseDto {
   @IsString()
   @ApiProperty({
     enum: ResponseType,

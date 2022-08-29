@@ -16,7 +16,8 @@ import { RegisterRequestDto } from '@modules/auth/dto/RegisterRequest.dto';
 import { RegisterResponseDto } from '@modules/auth/dto/RegisterResponse.dto';
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { ChangePasswordRequestDto } from './dto/ChangePasswordRequest.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ChangePasswordResponseDto } from './dto/ChangePasswordResponse.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -25,6 +26,11 @@ export class AuthController {
 
   @ApiOperation({
     summary: 'Register new user account',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Response status',
+    type: RegisterResponseDto,
   })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -41,6 +47,11 @@ export class AuthController {
     description:
       'Generates jwt access token based on the "username" and "password" fields',
   })
+  @ApiResponse({
+    status: 200,
+    description: 'Access token and user settings',
+    type: LoginResponseDto,
+  })
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -52,6 +63,11 @@ export class AuthController {
 
   @ApiOperation({
     summary: 'Update user password',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Response status',
+    type: ChangePasswordResponseDto,
   })
   @Patch('password')
   @UseGuards(JwtAuthGuard)
@@ -65,6 +81,6 @@ export class AuthController {
       req.user,
     );
 
-    return new RegisterResponseDto(result);
+    return new ChangePasswordResponseDto(result);
   }
 }

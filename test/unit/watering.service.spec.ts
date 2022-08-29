@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { User } from '.prisma/client';
 
 import { ResponseType } from '@enums/ResponseType';

@@ -1,4 +1,4 @@
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 
 const RESIZED_IMAGE_SIZE_PX = 300;
 
