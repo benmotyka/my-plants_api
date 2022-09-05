@@ -7,9 +7,9 @@ export class ChangePasswordResponseDto {
   @ApiProperty({
     enum: ResponseType,
   })
-  readonly status: string;
+  readonly status: ResponseType;
 
-  constructor(status: string) {
+  constructor(status: ResponseType) {
     this.status = status;
   }
 }

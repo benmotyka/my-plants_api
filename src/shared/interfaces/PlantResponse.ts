@@ -1,12 +1,25 @@
 import { Watering } from '.prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
-export interface PlantResponse {
+export class PlantResponse {
+  @ApiProperty()
   id: string;
+
+  @ApiProperty()
   name: string;
+
+  @ApiProperty()
   description?: string;
+
+  @ApiProperty()
   imgSrc?: string;
+
+  @ApiProperty()
   createdAt: Date;
 
+  @ApiProperty()
   latestWatering?: Watering;
+
+  @ApiProperty()
   wateringReminderFrequency?: number;
 }

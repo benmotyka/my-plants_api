@@ -51,7 +51,7 @@ export class PlantController {
     summary: 'Create plant',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Created plant',
     type: CreatePlantResponseResponseDto,
   })

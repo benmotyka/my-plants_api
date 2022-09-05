@@ -16,12 +16,22 @@ import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAll
 import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
 import { WaterPlantResponseDto } from '@modules/watering/dto/WaterPlantResponse.dto';
 import { WateringService } from '@modules/watering/watering.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Watering')
 @Controller('watering')
 export class WateringController {
   constructor(private readonly wateringService: WateringService) {}
   private readonly logger = new Logger(WateringController.name);
 
+  @ApiOperation({
+    summary: 'Gets all waterings for plant by plantId',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of waterings',
+    type: GetAllWateringsForPlantResponseDto,
+  })
   @Get(':plantId')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -41,6 +51,14 @@ export class WateringController {
     return new GetAllWateringsForPlantResponseDto(result);
   }
 
+  @ApiOperation({
+    summary: 'Creates watering for plant',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Response status',
+    type: WaterPlantResponseDto,
+  })
   @Post('')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)

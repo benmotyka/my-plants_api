@@ -28,7 +28,7 @@ export class AuthController {
     summary: 'Register new user account',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Response status',
     type: RegisterResponseDto,
   })
@@ -44,8 +44,7 @@ export class AuthController {
 
   @ApiOperation({
     summary: 'Login user to service',
-    description:
-      'Generates jwt access token based on the "username" and "password" fields',
+    description: 'Generates jwt access token based on the local strategy',
   })
   @ApiResponse({
     status: 200,

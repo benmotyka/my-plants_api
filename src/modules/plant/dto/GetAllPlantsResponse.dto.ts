@@ -5,7 +5,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetAllPlantsResponseDto {
   @IsArray()
-  @ApiProperty()
+  @ApiProperty({
+    type: PlantResponse,
+  })
   readonly plants: PlantResponse[];
 
   constructor(plants: PlantResponse[]) {
