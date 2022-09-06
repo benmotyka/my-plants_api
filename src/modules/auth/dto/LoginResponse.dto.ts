@@ -9,14 +9,20 @@ export class LoginResponseDto {
   @ApiProperty()
   readonly userSettings: UserSetting;
 
+  @ApiProperty()
+  readonly confirmedEmail: boolean;
+
   constructor({
     accessToken,
     userSettings,
+    confirmedEmail,
   }: {
     accessToken: string;
     userSettings: UserSetting;
+    confirmedEmail: boolean;
   }) {
     this.accessToken = accessToken;
     this.userSettings = userSettings;
+    this.confirmedEmail = confirmedEmail;
   }
 }

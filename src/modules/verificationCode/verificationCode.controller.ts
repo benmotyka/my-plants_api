@@ -1,14 +1,16 @@
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
   Logger,
-  Put,
+  Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SendEmailConfirmationRequestDto } from './dto/SendEmailConfirmation.request.dto';
 import { VerificationCodeService } from './verificationCode.service';
 
 @ApiTags('Verification code')
@@ -26,15 +28,20 @@ export class VerificationCodeController {
     // @TODO: add type
     type: 'string',
   })
-  @Put('confirm-email')
+  @Post('email/send')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async confirmEmail(
-    // @Body() ,
+  async sendEmailConfirmation(
+    @Body() payload: SendEmailConfirmationRequestDto,
     @Request() req,
   ) {
-    this.logger.debug(`Confirming email for user: ${req.user.username}`);
+    this.logger.debug(
+      `Sending email confirmation to email: ${payload.email} for user: ${req.user.username}`,
+    );
 
-    // const result = await this.verificationCodeService.confirmEmail();
+    const result = await this.verificationCodeService.sendEmailConfirmation(
+      payload,
+      req.user,
+    );
   }
 }

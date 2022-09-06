@@ -3,7 +3,7 @@ import { User } from '.prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateUser } from '@modules/user/interfaces/CreateUser';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettings.request.dto';
 import { ResponseType } from '@enums/ResponseType';
 
 @Injectable()

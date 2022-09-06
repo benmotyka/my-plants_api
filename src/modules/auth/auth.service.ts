@@ -114,6 +114,7 @@ export class AuthService {
         sub: user.id,
       }),
       userSettings,
+      confirmedEmail: !!user.email,
     };
   }
 

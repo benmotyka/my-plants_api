@@ -12,6 +12,8 @@ model User {
   username String @unique
   password String
 
+  email String?
+
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at")
@@ -20,7 +22,6 @@ model User {
   userSettings      UserSettings?
   VerificationCodes VerificationCodes[]
 
-  // email, accountConfirmed ?
   @@map("users")
 }
 

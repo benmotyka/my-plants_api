@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettings.request.dto';
 import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpsertSettingsResponseDto } from './dto/UpsertSettings.response.dto';
