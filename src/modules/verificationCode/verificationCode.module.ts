@@ -7,6 +7,7 @@ import { VerificationCodeService } from './verificationCode.service';
 @Module({
   imports: [
     MailerModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('SMTP_HOST'),

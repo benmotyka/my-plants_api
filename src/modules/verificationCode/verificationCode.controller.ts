@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SendEmailConfirmationRequestDto } from './dto/SendEmailConfirmation.request.dto';
+import { SendEmailConfirmationResponseDto } from './dto/SendEmailConfirmation.response.dto';
 import { VerificationCodeService } from './verificationCode.service';
 
 @ApiTags('Verification code')
@@ -25,8 +26,7 @@ export class VerificationCodeController {
   @ApiResponse({
     status: 200,
     description: 'Confirmation sent',
-    // @TODO: add type
-    type: 'string',
+    type: SendEmailConfirmationResponseDto,
   })
   @Post('email/send')
   @UseGuards(JwtAuthGuard)
@@ -43,5 +43,7 @@ export class VerificationCodeController {
       payload,
       req.user,
     );
+
+    return new SendEmailConfirmationResponseDto(result);
   }
 }

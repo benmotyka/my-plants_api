@@ -1,3 +1,4 @@
+import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
@@ -31,6 +32,8 @@ export class VerificationCodeService {
         userId: user.id,
       },
     });
+
+    return ResponseType.SUCCESS;
   }
 
   private generateCode() {
