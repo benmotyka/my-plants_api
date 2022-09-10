@@ -1,0 +1,33 @@
+import { NextFunction, Request, Response } from 'express';
+import passport from 'passport';
+import { BasicStrategy } from 'passport-http';
+import {
+  BadRequestException,
+  Injectable,
+  NestMiddleware,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class BasicAuth implements NestMiddleware {
+  constructor(private configService: ConfigService) {
+    passport.use(
+      new BasicStrategy(function (username, password, done) {
+        if (
+          configService.get('BASIC_AUTH_USERNAME') === username &&
+          configService.get('BASIC_AUTH_PASSWORD') === password
+        ) {
+          return done(null, true);
+        }
+        return done(new BadRequestException());
+      }),
+    );
+  }
+
+  use(req: Request, res: Response, next: NextFunction) {
+    const authenticate = () =>
+      passport.authenticate('basic', { session: false })(req, res, next);
+
+    return authenticate();
+  }
+}

@@ -10,6 +10,8 @@ import {
 import { Trim } from '@decorators/transform.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
+const MAX_WATERING_FREQUENCY_VALUE = 31;
+
 export class CreatePlantRequestDto {
   @Trim()
   @IsString()
@@ -38,7 +40,7 @@ export class CreatePlantRequestDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Max(7)
+  @Max(MAX_WATERING_FREQUENCY_VALUE)
   @ApiProperty()
   readonly wateringReminderFrequency?: number;
 }
