@@ -22,6 +22,7 @@ import { EditPlantResponseResponseDto } from '@modules/plant/dto/EditPlantRespon
 import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse.dto';
 import { PlantService } from '@modules/plant/plant.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DeviceId } from '@decorators/deviceId.decorator';
 
 @ApiTags('Plants')
 @Controller('plants')
@@ -40,9 +41,9 @@ export class PlantController {
   @Get('')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getAllPlants(@Request() req): Promise<GetAllPlantsResponseDto> {
-    this.logger.debug(`Getting all plants for user: ${req.user.username}`);
-    const plants = await this.plantService.getAllPlants(req.user);
+  async getAllPlants(@DeviceId() deviceId): Promise<GetAllPlantsResponseDto> {
+    this.logger.debug(`Getting all plants for device of id: ${deviceId}`);
+    const plants = await this.plantService.getAllPlants(deviceId);
 
     return new GetAllPlantsResponseDto(plants);
   }
@@ -60,14 +61,14 @@ export class PlantController {
   @HttpCode(HttpStatus.CREATED)
   async createPlant(
     @Body() createPlantRequestDto: CreatePlantRequestDto,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(
-      `Creating plant for user: ${req.user.username} with name: ${createPlantRequestDto.name}`,
+      `Creating plant for device of id: ${deviceId} with name: ${createPlantRequestDto.name}`,
     );
     const plant = await this.plantService.createPlant(
       createPlantRequestDto,
-      req.user,
+      deviceId,
     );
 
     return new CreatePlantResponseResponseDto(plant);
@@ -85,14 +86,14 @@ export class PlantController {
   @UseGuards(JwtAuthGuard)
   async editPlant(
     @Body() editPlantRequestDto: EditPlantRequestDto,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<EditPlantResponseResponseDto> {
     this.logger.debug(
-      `Updating plant for user: ${req.user.username} with name: ${editPlantRequestDto.name}`,
+      `Updating plant for device of id: ${deviceId} with name: ${editPlantRequestDto.name}`,
     );
     const plant = await this.plantService.editPlant(
       editPlantRequestDto,
-      req.user,
+      deviceId,
     );
     return new EditPlantResponseResponseDto(plant);
   }
@@ -109,12 +110,11 @@ export class PlantController {
   @UseGuards(JwtAuthGuard)
   async deletePlant(
     @Param('id') id: string,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<DeletePlantResponseDto> {
-    this.logger.debug(
-      `Deleting plant for user: ${req.user.username} of id: ${id}`,
-    );
-    const result = await this.plantService.deletePlant(id, req.user);
+    this.logger.debug(`Deleting plant for device of: ${deviceId}`);
+
+    const result = await this.plantService.deletePlant(id, deviceId);
 
     return new DeletePlantResponseDto(result);
   }
