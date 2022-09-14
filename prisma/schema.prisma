@@ -10,10 +10,6 @@ datasource db {
 model User {
   id       String @id @default(uuid())
   deviceId String @unique
-  username String? @unique
-  password String?
-
-  email String?
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
