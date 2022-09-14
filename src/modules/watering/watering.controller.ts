@@ -7,16 +7,15 @@ import {
   Logger,
   Param,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 
-import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
 import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
 import { WaterPlantResponseDto } from '@modules/watering/dto/WaterPlantResponse.dto';
 import { WateringService } from '@modules/watering/watering.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DeviceId } from '@decorators/deviceId.decorator';
 
 @ApiTags('Watering')
 @Controller('watering')
@@ -33,19 +32,18 @@ export class WateringController {
     type: GetAllWateringsForPlantResponseDto,
   })
   @Get(':plantId')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async getAllWateringsForPlant(
     @Param('plantId') plantId: string,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<GetAllWateringsForPlantResponseDto> {
     this.logger.debug(
-      `Getting all waterings for plant of id: ${plantId} for user: ${req.user.username}`,
+      `Getting all waterings for plant of id: ${plantId} for device of id: ${deviceId}`,
     );
 
     const result = await this.wateringService.getAllWateringsForPlant(
       plantId,
-      req.user,
+      deviceId,
     );
 
     return new GetAllWateringsForPlantResponseDto(result);
@@ -60,19 +58,18 @@ export class WateringController {
     type: WaterPlantResponseDto,
   })
   @Post('')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async waterPlant(
     @Body() waterPlantRequestDto: WaterPlantRequestDto,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<WaterPlantResponseDto> {
     this.logger.debug(
-      `Watering plant of id: ${waterPlantRequestDto.plantId} for user: ${req.user.username}`,
+      `Watering plant of id: ${waterPlantRequestDto.plantId} for device of id: ${deviceId}`,
     );
 
     const result = await this.wateringService.waterPlant(
       waterPlantRequestDto,
-      req.user,
+      deviceId,
     );
 
     return new WaterPlantResponseDto(result);

@@ -5,15 +5,13 @@ import {
   HttpStatus,
   Logger,
   Put,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettings.request.dto';
-import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpsertSettingsResponseDto } from './dto/UpsertSettings.response.dto';
+import { DeviceId } from '@decorators/deviceId.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -30,15 +28,14 @@ export class UserController {
     type: UpsertSettingsResponseDto,
   })
   @Put('settings')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async upsertSettings(
     @Body() settings: UpsertSettingsRequestDto,
-    @Request() req,
+    @DeviceId() deviceId,
   ): Promise<UpsertSettingsResponseDto> {
-    this.logger.debug(`Changing settings for user: ${req.user.username}`);
+    this.logger.debug(`Changing settings for user: ${deviceId}`);
 
-    const result = await this.userService.upsertSettings(settings, req.user);
+    const result = await this.userService.upsertSettings(settings, deviceId);
 
     return new UpsertSettingsResponseDto(result);
   }

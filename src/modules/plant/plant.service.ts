@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '.prisma/client';
 
 import { ResponseType } from '@enums/ResponseType';
 import { PlantResponse } from '@shared/interfaces/PlantResponse';
@@ -18,11 +17,13 @@ export class PlantService {
     private remindingService: RemindingService,
   ) {}
 
-  async getAllPlants(user: User): Promise<PlantResponse[]> {
+  async getAllPlants(deviceId: string): Promise<PlantResponse[]> {
     const plants = await this.prisma.plant.findMany({
       where: {
-        userId: user.id,
         deletedAt: null,
+        user: {
+          deviceId,
+        },
       },
       include: {
         watering: {
@@ -58,7 +59,7 @@ export class PlantService {
 
   async createPlant(
     createPlantRequestDto: CreatePlantRequestDto,
-    user: User,
+    deviceId: string,
   ): Promise<PlantResponse> {
     let imageUrl: string;
     if (createPlantRequestDto.imageSrc) {
@@ -69,11 +70,20 @@ export class PlantService {
 
     const plant = await this.prisma.plant.create({
       data: {
-        userId: user.id,
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
         imageSrc: imageUrl,
         color: createPlantRequestDto.color,
+        user: {
+          connectOrCreate: {
+            create: {
+              deviceId,
+            },
+            where: {
+              deviceId,
+            },
+          },
+        },
       },
     });
 
@@ -105,12 +115,14 @@ export class PlantService {
 
   async editPlant(
     editPlantRequestDto: EditPlantRequestDto,
-    user: User,
+    deviceId: string,
   ): Promise<PlantResponse> {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: editPlantRequestDto.id,
-        userId: user.id,
+        user: {
+          deviceId,
+        },
       },
     });
 
@@ -166,11 +178,13 @@ export class PlantService {
     };
   }
 
-  async deletePlant(id: string, user: User): Promise<ResponseType> {
+  async deletePlant(id: string, deviceId: string): Promise<ResponseType> {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: id,
-        userId: user.id,
+        user: {
+          deviceId,
+        },
       },
     });
 

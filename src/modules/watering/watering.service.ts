@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { User } from '.prisma/client';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ResponseType } from '@enums/ResponseType';
@@ -14,12 +13,14 @@ export class WateringService {
 
   async waterPlant(
     waterPlantRequestDto: WaterPlantRequestDto,
-    user: User,
+    deviceId: string,
   ): Promise<ResponseType> {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: waterPlantRequestDto.plantId,
-        userId: user.id,
+        user: {
+          deviceId,
+        },
       },
     });
 
@@ -40,12 +41,14 @@ export class WateringService {
 
   async getAllWateringsForPlant(
     plantId: string,
-    user: User,
+    deviceId: string,
   ): Promise<WateringData> {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: plantId,
-        userId: user.id,
+        user: {
+          deviceId,
+        },
       },
     });
 
