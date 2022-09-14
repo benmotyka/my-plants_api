@@ -1,4 +1,4 @@
-import { JwtAuthGuard } from '@guards/jwt-auth.guard';
+import { DeviceId } from '@decorators/deviceId.decorator';
 import {
   Body,
   Controller,
@@ -6,8 +6,6 @@ import {
   HttpStatus,
   Logger,
   Post,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SendEmailConfirmationRequestDto } from './dto/SendEmailConfirmation.request.dto';
@@ -29,19 +27,18 @@ export class VerificationCodeController {
     type: SendEmailConfirmationResponseDto,
   })
   @Post('email/send')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async sendEmailConfirmation(
     @Body() payload: SendEmailConfirmationRequestDto,
-    @Request() req,
+    @DeviceId() deviceId,
   ) {
     this.logger.debug(
-      `Sending email confirmation to email: ${payload.email} for user: ${req.user.username}`,
+      `Sending email confirmation to email: ${payload.email} for user: ${deviceId}`,
     );
 
     const result = await this.verificationCodeService.sendEmailConfirmation(
       payload,
-      req.user,
+      deviceId,
     );
 
     return new SendEmailConfirmationResponseDto(result);

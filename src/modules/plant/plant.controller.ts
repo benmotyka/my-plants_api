@@ -9,11 +9,8 @@ import {
   Param,
   Post,
   Put,
-  Request,
-  UseGuards,
 } from '@nestjs/common';
 
-import { JwtAuthGuard } from '@guards/jwt-auth.guard';
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { CreatePlantResponseResponseDto } from '@modules/plant/dto/CreatePlantResponse.dto';
 import { DeletePlantResponseDto } from '@modules/plant/dto/DeletePlantResponse.dto';
@@ -39,7 +36,6 @@ export class PlantController {
     type: GetAllPlantsResponseDto,
   })
   @Get('')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   async getAllPlants(@DeviceId() deviceId): Promise<GetAllPlantsResponseDto> {
     this.logger.debug(`Getting all plants for device of id: ${deviceId}`);
@@ -57,7 +53,6 @@ export class PlantController {
     type: CreatePlantResponseResponseDto,
   })
   @Post('')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createPlant(
     @Body() createPlantRequestDto: CreatePlantRequestDto,
@@ -83,7 +78,6 @@ export class PlantController {
     type: EditPlantResponseResponseDto,
   })
   @Put('')
-  @UseGuards(JwtAuthGuard)
   async editPlant(
     @Body() editPlantRequestDto: EditPlantRequestDto,
     @DeviceId() deviceId,
@@ -107,7 +101,6 @@ export class PlantController {
     type: DeletePlantResponseDto,
   })
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   async deletePlant(
     @Param('id') id: string,
     @DeviceId() deviceId,

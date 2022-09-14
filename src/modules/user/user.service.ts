@@ -29,15 +29,6 @@ export class UserService {
     });
   }
 
-  async createUser({ username, password }: CreateUser) {
-    return await this.prisma.user.create({
-      data: {
-        username,
-        password,
-      },
-    });
-  }
-
   async getUserSettings(user: User) {
     return await this.prisma.userSettings.findFirst({
       where: {
@@ -49,7 +40,13 @@ export class UserService {
     });
   }
 
-  async upsertSettings(settings: UpsertSettingsRequestDto, user: User) {
+  async upsertSettings(settings: UpsertSettingsRequestDto, deviceId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        deviceId,
+      },
+    });
+
     await this.prisma.userSettings.upsert({
       where: {
         userId: user.id,
@@ -58,8 +55,17 @@ export class UserService {
         pushNotificationsEnabled: settings.pushNotificationsEnabled,
       },
       create: {
-        userId: user.id,
         pushNotificationsEnabled: settings.pushNotificationsEnabled,
+        user: {
+          connectOrCreate: {
+            create: {
+              deviceId,
+            },
+            where: {
+              deviceId,
+            },
+          },
+        },
       },
     });
 
