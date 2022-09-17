@@ -23,15 +23,18 @@ model User {
 }
 
 model Plant {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
   name        String
   description String?
-  imageSrc    String?   @map("image_src")
-  color       String?
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-  deletedAt   DateTime? @map("deleted_at")
+  shareId     String  @unique @map("share_id")
+
+  imageSrc String? @map("image_src")
+  color    String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at")
 
   user        User         @relation(fields: [userId], references: [id])
   watering    Watering[]

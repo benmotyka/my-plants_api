@@ -8,6 +8,7 @@ import { RemindingService } from '@modules/reminding/reminding.service';
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { Exception } from '@enums/Exception';
+import { generateUserFriendlyId } from '@util/id';
 
 @Injectable()
 export class PlantService {
@@ -49,6 +50,7 @@ export class PlantService {
       name: plant.name,
       description: plant.description,
       imgSrc: plant.imageSrc,
+      shareId: plant.shareId,
       createdAt: plant.createdAt,
       latestWatering: plant.watering[0],
       ...(plant.reminders.length && {
@@ -68,11 +70,14 @@ export class PlantService {
       );
     }
 
+    const shareId = generateUserFriendlyId();
+
     const plant = await this.prisma.plant.create({
       data: {
         name: createPlantRequestDto.name,
         description: createPlantRequestDto.description,
         imageSrc: imageUrl,
+        shareId,
         color: createPlantRequestDto.color,
         user: {
           connectOrCreate: {
@@ -108,6 +113,7 @@ export class PlantService {
     return {
       id: plant.id,
       name: plant.name,
+      shareId: plant.shareId,
       description: plant.description,
       createdAt: plant.createdAt,
     };
@@ -174,6 +180,7 @@ export class PlantService {
       name: editedPlant.name,
       description: editedPlant.description,
       imgSrc: editedPlant.imageSrc,
+      shareId: editedPlant.shareId,
       createdAt: editedPlant.createdAt,
     };
   }

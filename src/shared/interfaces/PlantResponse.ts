@@ -18,6 +18,9 @@ export class PlantResponse {
   createdAt: Date;
 
   @ApiProperty()
+  shareId: string;
+
+  @ApiProperty()
   latestWatering?: Watering;
 
   @ApiProperty()
