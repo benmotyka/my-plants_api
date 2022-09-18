@@ -18,8 +18,10 @@ export class WateringService {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: waterPlantRequestDto.plantId,
-        user: {
-          deviceId,
+        users: {
+          every: {
+            deviceId,
+          },
         },
       },
     });
@@ -46,8 +48,10 @@ export class WateringService {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: plantId,
-        user: {
-          deviceId,
+        users: {
+          every: {
+            deviceId,
+          },
         },
       },
     });

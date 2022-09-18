@@ -15,16 +15,15 @@ model User {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at")
 
-  plants            Plant[]
-  userSettings      UserSettings?
-  VerificationCodes VerificationCodes[]
+  plants       Plant[]
+  userSettings UserSettings?
+  attachments   Attachment[]
 
   @@map("users")
 }
 
 model Plant {
   id          String  @id @default(uuid())
-  userId      String  @map("user_id")
   name        String
   description String?
   shareId     String  @unique @map("share_id")
@@ -36,12 +35,11 @@ model Plant {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at")
 
-  user        User         @relation(fields: [userId], references: [id])
-  watering    Watering[]
+  users       User[]
+  waterings    Watering[]
   attachments Attachment[]
   reminders   Reminder[]
 
-  // "GardenID"?
   @@map("plants")
 }
 
@@ -59,6 +57,7 @@ model Watering {
 model Attachment {
   id             String         @id @default(uuid())
   plantId        String         @map("plant_id")
+  userId         String         @map("user_id")
   url            String
   attachmentType AttachmentType @map("attachment_type")
 
@@ -67,6 +66,7 @@ model Attachment {
   deletedAt DateTime? @map("deleted_at")
 
   plant Plant @relation(fields: [plantId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
 
   @@map("attachments")
 }
@@ -96,22 +96,6 @@ model UserSettings {
   user User @relation(fields: [userId], references: [id])
 
   @@map("user_settings")
-}
-
-model VerificationCodes {
-  id     String @id @default(uuid())
-  userId String @map("user_id")
-
-  type   VerificationType
-  code   String
-  active Boolean          @default(true)
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("verification_codes")
 }
 
 enum AttachmentType {

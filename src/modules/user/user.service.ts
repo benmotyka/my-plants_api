@@ -8,6 +8,34 @@ import { ResponseType } from '@enums/ResponseType';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async findOneByDeviceId(deviceId: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        deviceId,
+      },
+      include: {
+        plants: true,
+        attachments: true,
+        userSettings: true,
+      },
+    });
+  }
+
+  async removePlantFromUserCollection(id: string, deviceId: string) {
+    await this.prisma.user.update({
+      where: {
+        deviceId,
+      },
+      data: {
+        plants: {
+          delete: {
+            id,
+          },
+        },
+      },
+    });
+  }
+
   async upsertSettings(settings: UpsertSettingsRequestDto, deviceId: string) {
     const user = await this.prisma.user.findFirst({
       where: {

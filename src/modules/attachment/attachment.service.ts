@@ -2,7 +2,7 @@ import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Attachment, AttachmentType, Plant } from '@prisma/client';
+import { Attachment, AttachmentType } from '@prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import {
@@ -51,16 +51,23 @@ export class AttachmentService {
     return result.Location;
   }
 
-  async createAttachment(
-    plant: Plant,
-    url: string,
-    attachmentType: AttachmentType,
-  ): Promise<Attachment> {
+  async createAttachment({
+    plantId,
+    userId,
+    url,
+    attachmentType,
+  }: {
+    plantId: string;
+    userId: string;
+    url: string;
+    attachmentType: AttachmentType;
+  }): Promise<Attachment> {
     this.logger.debug(`Creating attachment`);
     return await this.prisma.attachment.create({
       data: {
-        plantId: plant.id,
+        plantId,
         url,
+        userId,
         attachmentType,
       },
     });

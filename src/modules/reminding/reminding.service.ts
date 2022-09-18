@@ -15,9 +15,9 @@ export class RemindingService {
   async sendReminders() {
     const reminders = await this.getAllUnsentRemindersDetails();
     for (const reminder of reminders) {
-      if (reminder.plant.watering.length) {
+      if (reminder.plant.waterings.length) {
         const now = dayjs();
-        const lastWatering = dayjs(reminder.plant.watering[0].createdAt);
+        const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
 
         if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
           this.logger.debug('Sending reminder for plant:');
@@ -35,7 +35,7 @@ export class RemindingService {
       include: {
         plant: {
           include: {
-            watering: {
+            waterings: {
               orderBy: {
                 createdAt: 'desc',
               },

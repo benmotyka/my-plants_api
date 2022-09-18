@@ -9,6 +9,7 @@ import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto
 import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { Exception } from '@enums/Exception';
 import { generateUserFriendlyId } from '@util/id';
+import { UserService } from '@modules/user/user.service';
 
 @Injectable()
 export class PlantService {
@@ -16,18 +17,21 @@ export class PlantService {
     private prisma: PrismaService,
     private attachmentService: AttachmentService,
     private remindingService: RemindingService,
+    private userService: UserService,
   ) {}
 
   async getAllPlants(deviceId: string): Promise<PlantResponse[]> {
     const plants = await this.prisma.plant.findMany({
       where: {
         deletedAt: null,
-        user: {
-          deviceId,
+        users: {
+          every: {
+            deviceId,
+          },
         },
       },
       include: {
-        watering: {
+        waterings: {
           orderBy: {
             createdAt: 'desc',
           },
@@ -52,7 +56,7 @@ export class PlantService {
       imgSrc: plant.imageSrc,
       shareId: plant.shareId,
       createdAt: plant.createdAt,
-      latestWatering: plant.watering[0],
+      latestWatering: plant.waterings[0],
       ...(plant.reminders.length && {
         wateringReminderFrequency: plant.reminders[0].frequencyDays,
       }),
@@ -79,7 +83,7 @@ export class PlantService {
         imageSrc: imageUrl,
         shareId,
         color: createPlantRequestDto.color,
-        user: {
+        users: {
           connectOrCreate: {
             create: {
               deviceId,
@@ -92,12 +96,15 @@ export class PlantService {
       },
     });
 
+    const user = await this.userService.findOneByDeviceId(deviceId);
+
     if (imageUrl) {
-      await this.attachmentService.createAttachment(
-        plant,
-        imageUrl,
-        'plant_picture',
-      );
+      await this.attachmentService.createAttachment({
+        plantId: plant.id,
+        userId: user.id,
+        url: imageUrl,
+        attachmentType: 'plant_picture',
+      });
     }
 
     if (createPlantRequestDto.wateringReminderFrequency) {
@@ -126,8 +133,10 @@ export class PlantService {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: editPlantRequestDto.id,
-        user: {
-          deviceId,
+        users: {
+          every: {
+            deviceId,
+          },
         },
       },
     });
@@ -155,12 +164,15 @@ export class PlantService {
       },
     });
 
+    const user = await this.userService.findOneByDeviceId(deviceId);
+
     if (imageUrl) {
-      await this.attachmentService.createAttachment(
-        plant,
-        imageUrl,
-        'plant_picture',
-      );
+      await this.attachmentService.createAttachment({
+        plantId: plant.id,
+        userId: user.id,
+        attachmentType: 'plant_picture',
+        url: imageUrl,
+      });
     }
 
     if (editPlantRequestDto.wateringReminderFrequency) {
@@ -186,27 +198,7 @@ export class PlantService {
   }
 
   async deletePlant(id: string, deviceId: string): Promise<ResponseType> {
-    const plant = await this.prisma.plant.findFirst({
-      where: {
-        id: id,
-        user: {
-          deviceId,
-        },
-      },
-    });
-
-    if (!plant) {
-      throw new BadRequestException(Exception.INVALID_PLANT);
-    }
-
-    await this.prisma.plant.update({
-      data: {
-        deletedAt: new Date(),
-      },
-      where: {
-        id: id,
-      },
-    });
+    await this.userService.removePlantFromUserCollection(id, deviceId);
 
     return ResponseType.SUCCESS;
   }
