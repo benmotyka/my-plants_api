@@ -19,7 +19,7 @@ export class WateringService {
       where: {
         id: waterPlantRequestDto.plantId,
         users: {
-          every: {
+          some: {
             deviceId,
           },
         },
@@ -49,7 +49,7 @@ export class WateringService {
       where: {
         id: plantId,
         users: {
-          every: {
+          some: {
             deviceId,
           },
         },

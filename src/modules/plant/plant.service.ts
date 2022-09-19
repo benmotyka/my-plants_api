@@ -10,6 +10,7 @@ import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { Exception } from '@enums/Exception';
 import { generateUserFriendlyId } from '@util/id';
 import { UserService } from '@modules/user/user.service';
+import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 
 @Injectable()
 export class PlantService {
@@ -25,7 +26,7 @@ export class PlantService {
       where: {
         deletedAt: null,
         users: {
-          every: {
+          some: {
             deviceId,
           },
         },
@@ -64,39 +65,32 @@ export class PlantService {
   }
 
   async createPlant(
-    createPlantRequestDto: CreatePlantRequestDto,
+    payload: CreatePlantRequestDto,
     deviceId: string,
   ): Promise<PlantResponse> {
     let imageUrl: string;
-    if (createPlantRequestDto.imageSrc) {
-      imageUrl = await this.attachmentService.uploadFile(
-        createPlantRequestDto.imageSrc,
-      );
+    if (payload.imageSrc) {
+      imageUrl = await this.attachmentService.uploadFile(payload.imageSrc);
     }
 
     const shareId = generateUserFriendlyId();
 
+    const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
+
     const plant = await this.prisma.plant.create({
       data: {
-        name: createPlantRequestDto.name,
-        description: createPlantRequestDto.description,
+        name: payload.name,
+        description: payload.description,
         imageSrc: imageUrl,
         shareId,
-        color: createPlantRequestDto.color,
+        color: payload.color,
         users: {
-          connectOrCreate: {
-            create: {
-              deviceId,
-            },
-            where: {
-              deviceId,
-            },
+          connect: {
+            deviceId,
           },
         },
       },
     });
-
-    const user = await this.userService.findOneByDeviceId(deviceId);
 
     if (imageUrl) {
       await this.attachmentService.createAttachment({
@@ -107,10 +101,10 @@ export class PlantService {
       });
     }
 
-    if (createPlantRequestDto.wateringReminderFrequency) {
+    if (payload.wateringReminderFrequency) {
       await this.remindingService.createReminder(
         {
-          frequencyDays: createPlantRequestDto.wateringReminderFrequency,
+          frequencyDays: payload.wateringReminderFrequency,
           type: 'plant_watering',
         },
         plant,
@@ -126,15 +120,49 @@ export class PlantService {
     };
   }
 
+  async importPlant(
+    payload: ImportPlantRequestDto,
+    deviceId: string,
+  ): Promise<PlantResponse> {
+    const plant = await this.prisma.plant.findUnique({
+      where: {
+        shareId: payload.shareId,
+      },
+    });
+
+    const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        plants: {
+          connect: {
+            id: plant.id,
+          },
+        },
+      },
+    });
+
+    return {
+      id: plant.id,
+      name: plant.name,
+      shareId: plant.shareId,
+      description: plant.description,
+      createdAt: plant.createdAt,
+    };
+  }
+
   async editPlant(
-    editPlantRequestDto: EditPlantRequestDto,
+    payload: EditPlantRequestDto,
     deviceId: string,
   ): Promise<PlantResponse> {
     const plant = await this.prisma.plant.findFirst({
       where: {
-        id: editPlantRequestDto.id,
+        id: payload.id,
         users: {
-          every: {
+          some: {
             deviceId,
           },
         },
@@ -146,25 +174,23 @@ export class PlantService {
     }
 
     let imageUrl: string;
-    if (editPlantRequestDto.imageSrc) {
-      imageUrl = await this.attachmentService.uploadFile(
-        editPlantRequestDto.imageSrc,
-      );
+    if (payload.imageSrc) {
+      imageUrl = await this.attachmentService.uploadFile(payload.imageSrc);
     }
 
     const editedPlant = await this.prisma.plant.update({
       data: {
-        name: editPlantRequestDto.name,
-        description: editPlantRequestDto.description,
+        name: payload.name,
+        description: payload.description,
         imageSrc: imageUrl,
-        color: editPlantRequestDto.color,
+        color: payload.color,
       },
       where: {
         id: plant.id,
       },
     });
 
-    const user = await this.userService.findOneByDeviceId(deviceId);
+    const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
 
     if (imageUrl) {
       await this.attachmentService.createAttachment({
@@ -175,10 +201,10 @@ export class PlantService {
       });
     }
 
-    if (editPlantRequestDto.wateringReminderFrequency) {
+    if (payload.wateringReminderFrequency) {
       await this.remindingService.upsertReminderForPlant(
         {
-          frequencyDays: editPlantRequestDto.wateringReminderFrequency,
+          frequencyDays: payload.wateringReminderFrequency,
           type: 'plant_watering',
         },
         plant,

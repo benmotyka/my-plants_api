@@ -20,6 +20,8 @@ import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse
 import { PlantService } from '@modules/plant/plant.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
+import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
+import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 
 @ApiTags('Plants')
 @Controller('plants')
@@ -55,18 +57,34 @@ export class PlantController {
   @Post('')
   @HttpCode(HttpStatus.CREATED)
   async createPlant(
-    @Body() createPlantRequestDto: CreatePlantRequestDto,
+    @Body() payload: CreatePlantRequestDto,
     @DeviceId() deviceId,
   ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(
-      `Creating plant for device of id: ${deviceId} with name: ${createPlantRequestDto.name}`,
+      `Creating plant for device of id: ${deviceId} with name: ${payload.name}`,
     );
-    const plant = await this.plantService.createPlant(
-      createPlantRequestDto,
-      deviceId,
-    );
+    const plant = await this.plantService.createPlant(payload, deviceId);
 
     return new CreatePlantResponseResponseDto(plant);
+  }
+
+  @ApiOperation({
+    summary: 'Import plant',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Imported plant',
+    type: ImportPlantResponseResponseDto,
+  })
+  @Post('import')
+  @HttpCode(HttpStatus.CREATED)
+  async importPlant(
+    @Body() payload: ImportPlantRequestDto,
+    @DeviceId() deviceId,
+  ): Promise<ImportPlantResponseResponseDto> {
+    const plant = await this.plantService.importPlant(payload, deviceId);
+
+    return new ImportPlantResponseResponseDto(plant);
   }
 
   @ApiOperation({
@@ -79,16 +97,13 @@ export class PlantController {
   })
   @Put('')
   async editPlant(
-    @Body() editPlantRequestDto: EditPlantRequestDto,
+    @Body() payload: EditPlantRequestDto,
     @DeviceId() deviceId,
   ): Promise<EditPlantResponseResponseDto> {
     this.logger.debug(
-      `Updating plant for device of id: ${deviceId} with name: ${editPlantRequestDto.name}`,
+      `Updating plant for device of id: ${deviceId} with name: ${payload.name}`,
     );
-    const plant = await this.plantService.editPlant(
-      editPlantRequestDto,
-      deviceId,
-    );
+    const plant = await this.plantService.editPlant(payload, deviceId);
     return new EditPlantResponseResponseDto(plant);
   }
 
