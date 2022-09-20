@@ -47,12 +47,18 @@ export class RemindingService {
     });
   }
 
-  async createReminder(details: CreateReminderDetails, plant: Plant) {
+  async createReminder({
+    userId,
+    plantId,
+    frequencyDays,
+    type,
+  }: CreateReminderDetails) {
     return await this.prisma.reminder.create({
       data: {
-        plantId: plant.id,
-        frequencyDays: details.frequencyDays,
-        reminderType: details.type,
+        plantId,
+        userId,
+        frequencyDays: frequencyDays,
+        reminderType: type,
       },
     });
   }
@@ -68,27 +74,52 @@ export class RemindingService {
     });
   }
 
-  async upsertReminderForPlant(details: CreateReminderDetails, plant: Plant) {
-    return await this.prisma.reminder.upsert({
+  async upsertReminderForPlant({
+    userId,
+    plantId,
+    frequencyDays,
+    type,
+  }: CreateReminderDetails) {
+    const previousReminder = await this.prisma.reminder.findFirst({
       where: {
-        plantId: plant.id,
+        plantId,
+        userId,
       },
-      update: {
-        frequencyDays: details.frequencyDays,
-        reminderType: details.type,
-      },
-      create: {
-        plantId: plant.id,
-        frequencyDays: details.frequencyDays,
-        reminderType: details.type,
+    });
+
+    if (previousReminder) {
+      return await this.prisma.reminder.update({
+        where: {
+          id: previousReminder.id,
+        },
+        data: {
+          frequencyDays,
+        },
+      });
+    }
+    return await this.prisma.reminder.create({
+      data: {
+        plantId,
+        userId,
+        frequencyDays: frequencyDays,
+        reminderType: type,
       },
     });
   }
 
-  async deleteRemindersForPlant(plant: Plant) {
+  async deleteRemindersForPlant({
+    plantId,
+    deviceId,
+  }: {
+    plantId: string;
+    deviceId: string;
+  }) {
     return await this.prisma.reminder.deleteMany({
       where: {
-        plantId: plant.id,
+        plantId,
+        user: {
+          deviceId,
+        },
       },
     });
   }

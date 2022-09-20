@@ -44,6 +44,9 @@ export class PlantService {
           },
           where: {
             reminderType: 'plant_watering',
+            user: {
+              deviceId,
+            },
           },
           take: 1,
         },
@@ -102,13 +105,12 @@ export class PlantService {
     }
 
     if (payload.wateringReminderFrequency) {
-      await this.remindingService.createReminder(
-        {
-          frequencyDays: payload.wateringReminderFrequency,
-          type: 'plant_watering',
-        },
-        plant,
-      );
+      await this.remindingService.createReminder({
+        userId: user.id,
+        plantId: plant.id,
+        frequencyDays: payload.wateringReminderFrequency,
+        type: 'plant_watering',
+      });
     }
 
     return {
@@ -131,6 +133,14 @@ export class PlantService {
     });
 
     const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
+
+    if (!plant) {
+      throw new BadRequestException(Exception.INVALID_PLANT);
+    }
+
+    if (user.plants.map((plant) => plant.id).includes(plant.id)) {
+      throw new BadRequestException(Exception.PLANT_ALREADY_ADDED);
+    }
 
     await this.prisma.user.update({
       where: {
@@ -202,15 +212,17 @@ export class PlantService {
     }
 
     if (payload.wateringReminderFrequency) {
-      await this.remindingService.upsertReminderForPlant(
-        {
-          frequencyDays: payload.wateringReminderFrequency,
-          type: 'plant_watering',
-        },
-        plant,
-      );
+      await this.remindingService.upsertReminderForPlant({
+        plantId: plant.id,
+        userId: user.id,
+        frequencyDays: payload.wateringReminderFrequency,
+        type: 'plant_watering',
+      });
     } else {
-      await this.remindingService.deleteRemindersForPlant(plant);
+      await this.remindingService.deleteRemindersForPlant({
+        plantId: plant.id,
+        deviceId: user.deviceId,
+      });
     }
 
     return {

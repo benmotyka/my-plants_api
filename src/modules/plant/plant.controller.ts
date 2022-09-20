@@ -82,6 +82,9 @@ export class PlantController {
     @Body() payload: ImportPlantRequestDto,
     @DeviceId() deviceId,
   ): Promise<ImportPlantResponseResponseDto> {
+    // @NOTE: Fake wait to prevent bruteforce
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const plant = await this.plantService.importPlant(payload, deviceId);
 
     return new ImportPlantResponseResponseDto(plant);

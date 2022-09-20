@@ -55,9 +55,12 @@ export class UserService {
       where: {
         deviceId,
       },
+      include: {
+        userSettings: true,
+      },
     });
 
-    if (user) {
+    if (user && user.userSettings) {
       await this.prisma.userSettings.update({
         where: {
           userId: user.id,
@@ -71,8 +74,13 @@ export class UserService {
         data: {
           pushNotificationsEnabled: settings.pushNotificationsEnabled,
           user: {
-            create: {
-              deviceId,
+            connectOrCreate: {
+              create: {
+                deviceId,
+              },
+              where: {
+                deviceId,
+              },
             },
           },
         },
