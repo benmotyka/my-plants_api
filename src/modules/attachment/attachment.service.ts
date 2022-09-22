@@ -72,4 +72,15 @@ export class AttachmentService {
       },
     });
   }
+
+  async getAttachmentsByPlantId(id: string): Promise<Attachment[]> {
+    return await this.prisma.attachment.findMany({
+      where: {
+        plantId: id,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

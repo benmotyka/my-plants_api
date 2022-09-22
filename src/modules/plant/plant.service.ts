@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import dayjs from 'dayjs';
 
 import { ResponseType } from '@enums/ResponseType';
 import { PlantResponse } from '@shared/interfaces/PlantResponse';
@@ -11,6 +12,7 @@ import { Exception } from '@enums/Exception';
 import { generateUserFriendlyId } from '@util/id';
 import { UserService } from '@modules/user/user.service';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
+import { ImagesData } from './dto/GetPlantImagesHistory.dto';
 
 @Injectable()
 export class PlantService {
@@ -239,5 +241,43 @@ export class PlantService {
     await this.userService.removePlantFromUserCollection(id, deviceId);
 
     return ResponseType.SUCCESS;
+  }
+
+  async getPlantImagesHistory(
+    plantId: string,
+    deviceId: string,
+  ): Promise<ImagesData> {
+    const plant = await this.prisma.plant.findFirst({
+      where: {
+        id: plantId,
+        users: {
+          some: {
+            deviceId,
+          },
+        },
+      },
+    });
+
+    if (!plant) {
+      throw new BadRequestException(Exception.INVALID_PLANT);
+    }
+
+    const attachments = await this.attachmentService.getAttachmentsByPlantId(
+      plant.id,
+    );
+
+    let response: ImagesData = {};
+    attachments.forEach((attachment) => {
+      const day = dayjs(attachment.createdAt).format('YYYY-MM-DD');
+      if (!response[day]) {
+        response = {
+          ...response,
+          [day]: [],
+        };
+      }
+      response[day].push(attachment.url);
+    });
+
+    return response;
   }
 }

@@ -22,6 +22,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
 import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
+import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistory.dto';
 
 @ApiTags('Plants')
 @Controller('plants')
@@ -128,5 +129,25 @@ export class PlantController {
     const result = await this.plantService.deletePlant(id, deviceId);
 
     return new DeletePlantResponseDto(result);
+  }
+
+  @ApiOperation({
+    summary: 'Get plants images history',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'History of attachments for given plant',
+    type: GetPlantImagesHistoryResponseDto,
+  })
+  @Get('history/images/:id')
+  async getPlantImagesHistory(
+    @Param('id') id: string,
+    @DeviceId() deviceId,
+  ): Promise<GetPlantImagesHistoryResponseDto> {
+    this.logger.debug(`Getting history of images for plantId: ${id}`);
+
+    const result = await this.plantService.getPlantImagesHistory(id, deviceId);
+
+    return new GetPlantImagesHistoryResponseDto(result);
   }
 }
