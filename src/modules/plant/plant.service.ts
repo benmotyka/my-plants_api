@@ -13,6 +13,7 @@ import { generateUserFriendlyId } from '@util/id';
 import { UserService } from '@modules/user/user.service';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 import { ImagesData } from './dto/GetPlantImagesHistory.dto';
+import { UploadImageRequestDto } from './dto/UploadImageRequest.dto';
 
 @Injectable()
 export class PlantService {
@@ -164,6 +165,24 @@ export class PlantService {
       description: plant.description,
       createdAt: plant.createdAt,
     };
+  }
+
+  async uploadImage(
+    payload: UploadImageRequestDto,
+    deviceId: string,
+  ): Promise<ResponseType> {
+    const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
+
+    const imageUrl = await this.attachmentService.uploadFile(payload.image);
+
+    await this.attachmentService.createAttachment({
+      plantId: payload.plantId,
+      userId: user.id,
+      attachmentType: 'plant_picture',
+      url: imageUrl,
+    });
+
+    return ResponseType.SUCCESS;
   }
 
   async editPlant(

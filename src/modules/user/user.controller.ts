@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettings.request.dto';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpsertSettingsResponseDto } from './dto/UpsertSettings.response.dto';
+import { UpsertSettingsResponseDto } from './dto/UpsertSettingsResponse.dto';
 import { DeviceId } from '@decorators/deviceId.decorator';
 
 @ApiTags('User')

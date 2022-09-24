@@ -23,6 +23,8 @@ import { DeviceId } from '@decorators/deviceId.decorator';
 import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistory.dto';
+import { UploadImageResponseDto } from './dto/UploadImageResponse.dto';
+import { UploadImageRequestDto } from './dto/UploadImageRequest.dto';
 
 @ApiTags('Plants')
 @Controller('plants')
@@ -129,6 +131,28 @@ export class PlantController {
     const result = await this.plantService.deletePlant(id, deviceId);
 
     return new DeletePlantResponseDto(result);
+  }
+
+  @ApiOperation({
+    summary: 'Uploads image (attachment) to plant',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Response status',
+    type: UploadImageResponseDto,
+  })
+  @Post('images')
+  async uploadImage(
+    @Body() payload: UploadImageRequestDto,
+    @DeviceId() deviceId,
+  ): Promise<UploadImageResponseDto> {
+    this.logger.debug(
+      `Uploading image for plant of id: ${payload.image} and device of id: ${deviceId}`,
+    );
+
+    const result = await this.plantService.uploadImage(payload, deviceId);
+
+    return new UploadImageResponseDto(result);
   }
 
   @ApiOperation({

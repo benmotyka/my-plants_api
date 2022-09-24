@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettings.request.dto';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
 import { ResponseType } from '@enums/ResponseType';
 
 @Injectable()
