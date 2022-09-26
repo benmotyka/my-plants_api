@@ -147,7 +147,7 @@ export class PlantController {
     @DeviceId() deviceId,
   ): Promise<UploadImageResponseDto> {
     this.logger.debug(
-      `Uploading image for plant of id: ${payload.image} and device of id: ${deviceId}`,
+      `Uploading image for plant of id: ${payload.plantId} and device of id: ${deviceId}`,
     );
 
     const result = await this.plantService.uploadImage(payload, deviceId);
