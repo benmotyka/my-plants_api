@@ -102,6 +102,17 @@ model UserSettings {
   @@map("user_settings")
 }
 
+model PatchNotes {
+  id      String @id @default(uuid())
+  patch   Int
+  changes String[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("patch_notes")
+}
+
 enum AttachmentType {
   plant_picture
 }

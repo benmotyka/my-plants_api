@@ -6,11 +6,10 @@
     <img src="readme/banner.svg" alt="Banner">
   </a>
   <h1 align="center">My Plants</h1>
-  <h3 align="center">Mobile Application</h3>
   <h5 align="center">Back-end App</h5>
   <p align="center">
     <a href="https://harmonious-entremet-3dda15.netlify.app/"><h4>Explore the page »</h4></a>
-    <a href="https://harmonious-entremet-3dda15.netlify.app/#download"><h3>Download App »</h3></a>
+    <a href="https://harmonious-entremet-3dda15.netlify.app/#download"><h4>Download App »</h4></a>
     <a href="https://github.com/benmotyka/my-plants_api/issues">Report Bug</a>
     ·
     <a href="https://github.com/benmotyka/my-plants_api/issues">Request Feature</a>
