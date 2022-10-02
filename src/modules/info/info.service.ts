@@ -1,14 +1,12 @@
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { GetLastPatchNotesResponseDto } from './dto/GetLastPatchNotesResponse.dto';
+import { PatchNote } from './interfaces/PatchNote';
 
 @Injectable()
 export class InfoService {
   constructor(private prisma: PrismaService) {}
 
-  async getLastPatchNotes(
-    amount: number,
-  ): Promise<GetLastPatchNotesResponseDto> {
+  async getLastPatchNotes(amount: number): Promise<PatchNote[]> {
     return await this.prisma.patchNotes.findMany({
       select: {
         patch: true,

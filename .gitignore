@@ -396,5 +396,3 @@ Temporary Items
 # Local
 .env
 dist
-
-prisma/migrations/*

@@ -1,5 +1,5 @@
 export interface PatchNote {
   patch: number;
   changes: string[];
-  createdAt: string;
+  createdAt: Date | string;
 }

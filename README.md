@@ -8,8 +8,6 @@
   <h1 align="center">My Plants</h1>
   <h5 align="center">Back-end App</h5>
   <p align="center">
-    <a href="https://harmonious-entremet-3dda15.netlify.app/"><h4>Explore the page »</h4></a>
-    <a href="https://harmonious-entremet-3dda15.netlify.app/#download"><h4>Download App »</h4></a>
     <a href="https://github.com/benmotyka/my-plants_api/issues">Report Bug</a>
     ·
     <a href="https://github.com/benmotyka/my-plants_api/issues">Request Feature</a>
@@ -87,10 +85,6 @@ Please refer to [https://github.com/benmotyka/my-plants_app](https://github.com/
 4. Run app
    ```sh
    docker-compose up --build
-   ```
-5. Generate database schema and apply it to database
-   ```sh
-   npx prisma migrate dev
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
