@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import {
-  BadRequestException,
   Injectable,
   NestMiddleware,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -19,7 +19,7 @@ export class BasicAuth implements NestMiddleware {
         ) {
           return done(null, true);
         }
-        return done(new BadRequestException());
+        return done(new UnauthorizedException());
       }),
     );
   }
