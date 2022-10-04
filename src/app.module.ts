@@ -24,11 +24,12 @@ import { BasicAuth } from '@middleware/basic-auth';
     }),
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(BasicAuth)
-      .exclude({ path: 'info/patch-notes/(.*)', method: RequestMethod.ALL })
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(BasicAuth)
+//       .exclude({ path: 'info/patch-notes/(.*)', method: RequestMethod.ALL })
+//       .forRoutes('*');
+//   }
+// }
