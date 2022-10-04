@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PatchNote } from './interfaces/PatchNote';
@@ -7,16 +9,17 @@ export class InfoService {
   constructor(private prisma: PrismaService) {}
 
   async getLastPatchNotes(amount: number): Promise<PatchNote[]> {
-    return await this.prisma.patchNotes.findMany({
-      select: {
-        patch: true,
-        changes: true,
-        createdAt: true,
-      },
+    const patchNotes = await this.prisma.patchNotes.findMany({
       take: amount,
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    return patchNotes.map(({ changes, patch, createdAt }) => ({
+      changes,
+      patch,
+      createdAt: dayjs(createdAt).format('YYYY-MM-DD'),
+    }));
   }
 }

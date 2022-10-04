@@ -104,7 +104,7 @@ model UserSettings {
 
 model PatchNotes {
   id      String @id @default(uuid())
-  patch   Int
+  patch   String
   changes String[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
