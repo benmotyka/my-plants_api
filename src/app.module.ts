@@ -12,6 +12,7 @@ import { UserModule } from '@modules/user/user.module';
 import { WateringModule } from '@modules/watering/watering.module';
 import { InfoModule } from '@modules/info/info.module';
 import { BasicAuth } from '@middleware/basic-auth';
+import { UtilModule } from '@modules/util/util.module';
 @Module({
   imports: [
     UserModule,
@@ -22,6 +23,7 @@ import { BasicAuth } from '@middleware/basic-auth';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    UtilModule,
   ],
 })
 export class AppModule {}

@@ -33,8 +33,7 @@ describe('PlantService', () => {
 
     mockUser = {
       id: '123',
-      username: 'username',
-      password: 'password',
+      deviceId: '123',
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
@@ -43,7 +42,6 @@ describe('PlantService', () => {
       id: '123',
       name: 'name',
       description: 'description',
-      userId: mockUser.id,
       imageSrc: null,
       color: null,
       createdAt: new Date(),
@@ -51,6 +49,7 @@ describe('PlantService', () => {
       deletedAt: null,
       watering: [],
       reminders: [],
+      
     };
   });
 
