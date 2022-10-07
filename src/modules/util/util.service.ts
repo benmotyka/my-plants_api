@@ -47,7 +47,7 @@ export class UtilService {
     }
   }
 
-  generateUserFriendlyId() {
+  generateUserFriendlyId(): string {
     return this.generator();
   }
 }
