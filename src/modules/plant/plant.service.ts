@@ -9,11 +9,11 @@ import { RemindingService } from '@modules/reminding/reminding.service';
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { Exception } from '@enums/Exception';
-import { generateUserFriendlyId } from '@util/id';
 import { UserService } from '@modules/user/user.service';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 import { ImagesData } from './dto/GetPlantImagesHistory.dto';
 import { UploadImageRequestDto } from './dto/UploadImageRequest.dto';
+import { UtilService } from '@modules/util/util.service';
 
 @Injectable()
 export class PlantService {
@@ -22,6 +22,7 @@ export class PlantService {
     private attachmentService: AttachmentService,
     private remindingService: RemindingService,
     private userService: UserService,
+    private utilService: UtilService,
   ) {}
 
   async getAllPlants(deviceId: string): Promise<PlantResponse[]> {
@@ -79,7 +80,7 @@ export class PlantService {
       imageUrl = await this.attachmentService.uploadFile(payload.imageSrc);
     }
 
-    const shareId = generateUserFriendlyId();
+    const shareId = this.utilService.generateUserFriendlyId();
 
     const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
 

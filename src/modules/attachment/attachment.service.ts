@@ -5,18 +5,15 @@ import { ConfigService } from '@nestjs/config';
 import { Attachment, AttachmentType } from '@prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
-import {
-  getBase64EncodedFileType,
-  getRawFileFromBase64EncodedFile,
-  resizeImage,
-} from '@util/file';
 import { Exception } from '@enums/Exception';
+import { UtilService } from '@modules/util/util.service';
 
 @Injectable()
 export class AttachmentService {
   constructor(
     private configService: ConfigService,
     private prisma: PrismaService,
+    private utilService: UtilService,
   ) {}
   private readonly logger = new Logger(AttachmentService.name);
 
@@ -27,17 +24,19 @@ export class AttachmentService {
 
   async uploadFile(base64EncodedFile: string): Promise<string> {
     const availableFileTypes = ['png', 'jpg', 'jpeg', 'heic'];
-    const fileType = getBase64EncodedFileType(base64EncodedFile);
+    const fileType =
+      this.utilService.getBase64EncodedFileType(base64EncodedFile);
     this.logger.debug(`Starting uploading file of type: ${fileType}`);
 
     if (!availableFileTypes.includes(fileType)) {
       throw new BadRequestException(Exception.INVALID_FILE);
     }
     this.logger.debug(`Resizing image`);
-    const resizedImage = await resizeImage(base64EncodedFile);
+    const resizedImage = await this.utilService.resizeImage(base64EncodedFile);
 
     this.logger.debug(`Image resized, getting raw image data from it`);
-    const rawImage = getRawFileFromBase64EncodedFile(resizedImage);
+    const rawImage =
+      this.utilService.getRawFileFromBase64EncodedFile(resizedImage);
 
     const s3Params = {
       Bucket: this.configService.get('S3_BUCKET_NAME'),
