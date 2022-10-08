@@ -1,0 +1,13 @@
+version: '3'
+services:
+  test-db:
+    image: postgres:12
+    container_name: integration_test_db
+    ports:
+      - 5400:5432
+    environment:
+      TZ: 'GMT'
+      PGTZ: 'GMT'
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
