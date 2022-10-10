@@ -35,7 +35,7 @@ export class UserService {
     return user;
   }
 
-  async removePlantFromUserCollection(id: string, deviceId: string) {
+  async removePlantFromUserCollection(plantId: string, deviceId: string) {
     await this.prisma.user.update({
       where: {
         deviceId,
@@ -43,7 +43,7 @@ export class UserService {
       data: {
         plants: {
           disconnect: {
-            id,
+            id: plantId,
           },
         },
       },
