@@ -5,6 +5,9 @@ import { PlantService } from '@modules/plant/plant.service';
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { UserService } from '@modules/user/user.service';
 import { v4 as uuid } from 'uuid';
+import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
+import { BadRequestException } from '@nestjs/common';
+import { Exception } from '@enums/Exception';
 
 describe('PlantService', () => {
   let prisma: PrismaService;
@@ -22,12 +25,12 @@ describe('PlantService', () => {
   });
 
   describe('createPlant', () => {
-    it('should create one plant', async () => {
+    it('should create plant successfully', async () => {
       const randomId = uuid();
       const user = await userService.findOneOrCreateByDeviceId(randomId);
 
-      const name = 'test';
-      const description = 'test';
+      const name = 'name';
+      const description = 'description';
       const payload: CreatePlantRequestDto = {
         name,
         description,
@@ -41,6 +44,51 @@ describe('PlantService', () => {
       expect(result.shareId).toHaveLength(6);
       expect(result.description).toBe(description);
       expect(result.createdAt).toBeInstanceOf(Date);
+    });
+  });
+
+  describe('editPlant', () => {
+    it('should edit plant successfully', async () => {
+      const randomId = uuid();
+      const user = await userService.findOneOrCreateByDeviceId(randomId);
+
+      const createdPlant = await plantService.createPlant(
+        {
+          name: 'name',
+          description: 'description',
+        },
+        user.deviceId,
+      );
+      const name = 'newName';
+      const description = 'newDescription';
+      const payload: EditPlantRequestDto = {
+        id: createdPlant.id,
+        name,
+        description,
+      };
+      const result = await plantService.editPlant(payload, user.deviceId);
+
+      expect(result).toBeDefined();
+      expect(typeof result.id).toBe('string');
+      expect(result.name).toBe(name);
+      expect(typeof result.shareId).toBe('string');
+      expect(result.shareId).toBe(createdPlant.shareId);
+      expect(result.description).toBe(description);
+      expect(result.createdAt).toBeInstanceOf(Date);
+    });
+
+    it('should throw invalid plant exception', async () => {
+      const randomId = uuid();
+      const user = await userService.findOneOrCreateByDeviceId(randomId);
+
+      const payload: EditPlantRequestDto = {
+        id: 'random-id',
+        name: 'newName',
+      };
+
+      expect(async () => {
+        await plantService.editPlant(payload, user.deviceId);
+      }).rejects.toThrow(new BadRequestException(Exception.INVALID_PLANT));
     });
   });
 });

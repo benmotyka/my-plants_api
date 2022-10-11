@@ -3,6 +3,7 @@ import { AppModule } from '../../src/app.module';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UserService } from '@modules/user/user.service';
 import { v4 as uuid } from 'uuid';
+import { UpsertSettingsRequestDto } from '@modules/user/dto/UpsertSettingsequest.dto';
 
 describe('UserService', () => {
   let prisma: PrismaService;
@@ -18,7 +19,7 @@ describe('UserService', () => {
   });
 
   describe('findOneOrCreateByDeviceId', () => {
-    it('should create one user', async () => {
+    it('should create one user successfully', async () => {
       const randomId = uuid();
       const result = await userService.findOneOrCreateByDeviceId(randomId);
 
@@ -31,6 +32,22 @@ describe('UserService', () => {
       expect(result.attachments).toHaveLength(0);
       expect(result.userSettings).toBeNull();
       expect(typeof result.id).toBe('string');
+    });
+  });
+
+  describe('upsertSettings', () => {
+    it('should upsert settings successfully', async () => {
+      const randomId = uuid();
+      const settings: UpsertSettingsRequestDto = {
+        pushNotificationsEnabled: true,
+      };
+      const result = await userService.upsertSettings(settings, randomId);
+      expect(result).toBeDefined();
+      expect(result).toBe('success');
+
+      const user = await userService.findOneOrCreateByDeviceId(randomId);
+      expect(user).toBeDefined();
+      expect(user.userSettings.pushNotificationsEnabled).toBe(true);
     });
   });
 });
