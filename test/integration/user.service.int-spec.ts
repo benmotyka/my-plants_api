@@ -50,4 +50,37 @@ describe('UserService', () => {
       expect(user.userSettings.pushNotificationsEnabled).toBe(true);
     });
   });
+
+  describe('removePlantFromUserCollection', () => {
+    it('should remove plant from user collection successfully', async () => {
+      const deviceId = uuid();
+      const plantId = uuid();
+
+      await prisma.user.create({
+        data: {
+          deviceId,
+          plants: {
+            create: {
+              id: plantId,
+              name: 'test',
+              shareId: 'test',
+            },
+          },
+        },
+      });
+
+      await userService.removePlantFromUserCollection(plantId, deviceId);
+
+      const userPlants = await prisma.user.findFirst({
+        where: {
+          deviceId,
+        },
+        include: {
+          plants: true,
+        },
+      });
+
+      expect(userPlants.plants.length).toBe(0);
+    });
+  });
 });
