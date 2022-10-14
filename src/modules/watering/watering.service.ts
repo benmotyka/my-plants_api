@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
 import { WateringData } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
@@ -14,7 +13,7 @@ export class WateringService {
   async waterPlant(
     waterPlantRequestDto: WaterPlantRequestDto,
     deviceId: string,
-  ): Promise<ResponseType> {
+  ): Promise<string> {
     const plant = await this.prisma.plant.findFirst({
       where: {
         id: waterPlantRequestDto.plantId,
@@ -30,7 +29,7 @@ export class WateringService {
       throw new BadRequestException(Exception.INVALID_PLANT);
     }
 
-    await this.prisma.watering.create({
+    const result = await this.prisma.watering.create({
       data: {
         plantId: plant.id,
       },
@@ -38,7 +37,32 @@ export class WateringService {
 
     // @TODO: check if there's any watering and if there is clear notified status
 
-    return ResponseType.SUCCESS;
+    return result.id;
+  }
+
+  async cancelWatering(wateringId: string, deviceId: string): Promise<void> {
+    const watering = await this.prisma.watering.findFirst({
+      where: {
+        id: wateringId,
+        plant: {
+          users: {
+            some: {
+              deviceId,
+            },
+          },
+        },
+      },
+    });
+
+    if (!watering) {
+      throw new BadRequestException(Exception.INVALID_PLANT);
+    }
+
+    await this.prisma.watering.delete({
+      where: {
+        id: watering.id,
+      },
+    });
   }
 
   async getAllWateringsForPlant(

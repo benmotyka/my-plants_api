@@ -1,13 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Logger,
   Param,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 
 import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
@@ -54,7 +54,7 @@ export class WateringController {
   })
   @ApiResponse({
     status: 201,
-    description: 'Response status',
+    description: 'Watering id',
     type: WaterPlantResponseDto,
   })
   @Post('')
@@ -73,5 +73,24 @@ export class WateringController {
     );
 
     return new WaterPlantResponseDto(result);
+  }
+
+  @ApiOperation({
+    summary: 'Cancels watering of plant',
+  })
+  @ApiResponse({
+    status: 200,
+  })
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async cancelWatering(
+    @Param('id') id: string,
+    @DeviceId() deviceId,
+  ): Promise<void> {
+    this.logger.debug(
+      `Canceling watering plant of id: ${id} done by user: ${deviceId}`,
+    );
+
+    await this.wateringService.cancelWatering(id, deviceId);
   }
 }

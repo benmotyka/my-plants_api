@@ -1,15 +1,12 @@
-import { ResponseType } from '@enums/ResponseType';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
 export class WaterPlantResponseDto {
   @IsString()
-  @ApiProperty({
-    enum: ResponseType,
-  })
-  readonly status: ResponseType;
+  @ApiProperty()
+  readonly id: string;
 
-  constructor(status: ResponseType) {
-    this.status = status;
+  constructor(id: string) {
+    this.id = id;
   }
 }
