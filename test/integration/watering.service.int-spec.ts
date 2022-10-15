@@ -1,13 +1,12 @@
+import dayjs from 'dayjs';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { WateringService } from '@modules/watering/watering.service';
 import { v4 as uuid } from 'uuid';
 import { WaterPlantRequestDto } from '@modules/watering/dto/WaterPlantRequest.dto';
-import { ResponseType } from '@enums/ResponseType';
 import { BadRequestException } from '@nestjs/common';
 import { Exception } from '@enums/Exception';
-
 describe('WateringService', () => {
   let prisma: PrismaService;
   let wateringService: WateringService;
@@ -45,7 +44,7 @@ describe('WateringService', () => {
       const result = await wateringService.waterPlant(payload, deviceId);
 
       expect(result).toBeDefined();
-      expect(result).toBe(ResponseType.SUCCESS);
+      expect(typeof result).toBe('string');
 
       const watering = await prisma.watering.findFirst({
         where: {
@@ -55,7 +54,6 @@ describe('WateringService', () => {
 
       expect(watering).toBeDefined();
       expect(watering.plantId).toBe(plantId);
-      expect(watering.createdAt).toBeInstanceOf(Date);
     });
 
     it('should throw invalid plant exception', async () => {
@@ -81,6 +79,67 @@ describe('WateringService', () => {
       };
       expect(async () => {
         await wateringService.waterPlant(payload, deviceId2);
+      }).rejects.toThrow(new BadRequestException(Exception.INVALID_PLANT));
+    });
+  });
+
+  describe('getAllWateringsForPlant', () => {
+    it('should return waterings successfully', async () => {
+      const deviceId = uuid();
+      const plantId = uuid();
+      const wateringId = uuid();
+
+      await prisma.user.create({
+        data: {
+          deviceId,
+          plants: {
+            create: {
+              id: plantId,
+              name: 'test',
+              shareId: uuid(),
+              waterings: {
+                create: {
+                  id: wateringId,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const result = await wateringService.getAllWateringsForPlant(
+        plantId,
+        deviceId,
+      );
+
+      const day = dayjs().format('YYYY-MM-DD');
+
+      expect(result).toBeDefined();
+      expect(Object.keys(result)).toContain(day);
+      expect(Object.keys(result)).toHaveLength(1);
+      expect(result[day]).toHaveLength(1);
+      expect(result[day][0]).toBeInstanceOf(Date);
+    });
+
+    it('should throw invalid plant exception', async () => {
+      const deviceId = uuid();
+      const deviceId2 = uuid();
+      const plantId = uuid();
+
+      await prisma.user.create({
+        data: {
+          deviceId,
+          plants: {
+            create: {
+              id: plantId,
+              name: 'test',
+              shareId: uuid(),
+            },
+          },
+        },
+      });
+      expect(async () => {
+        await wateringService.getAllWateringsForPlant(plantId, deviceId2);
       }).rejects.toThrow(new BadRequestException(Exception.INVALID_PLANT));
     });
   });

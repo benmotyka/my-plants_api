@@ -25,8 +25,6 @@ describe('UserService', () => {
 
       expect(result).toBeDefined();
       expect(result.deviceId).toBe(randomId);
-      expect(result.createdAt).toBeInstanceOf(Date);
-      expect(result.updatedAt).toBeInstanceOf(Date);
       expect(result.deletedAt).toBeNull();
       expect(result.plants).toHaveLength(0);
       expect(result.attachments).toHaveLength(0);

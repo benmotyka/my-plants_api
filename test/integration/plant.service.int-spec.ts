@@ -43,7 +43,6 @@ describe('PlantService', () => {
       expect(typeof result.shareId).toBe('string');
       expect(result.shareId).toHaveLength(6);
       expect(result.description).toBe(description);
-      expect(result.createdAt).toBeInstanceOf(Date);
     });
   });
 
@@ -74,7 +73,6 @@ describe('PlantService', () => {
       expect(typeof result.shareId).toBe('string');
       expect(result.shareId).toBe(createdPlant.shareId);
       expect(result.description).toBe(description);
-      expect(result.createdAt).toBeInstanceOf(Date);
     });
 
     it('should throw invalid plant exception', async () => {
