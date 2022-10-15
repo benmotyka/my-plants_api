@@ -143,4 +143,68 @@ describe('WateringService', () => {
       }).rejects.toThrow(new BadRequestException(Exception.INVALID_PLANT));
     });
   });
+
+  describe('cancelWatering', () => {
+    it('should cancel watering successfully', async () => {
+      const deviceId = uuid();
+      const plantId = uuid();
+      const wateringId = uuid();
+
+      await prisma.user.create({
+        data: {
+          deviceId,
+          plants: {
+            create: {
+              id: plantId,
+              name: 'test',
+              shareId: uuid(),
+              waterings: {
+                create: {
+                  id: wateringId,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      await wateringService.cancelWatering(wateringId, deviceId);
+
+      const watering = await prisma.watering.findFirst({
+        where: {
+          id: wateringId,
+        },
+      });
+
+      expect(watering).toBeNull();
+    });
+
+    it('should throw invalid plant exception', async () => {
+      const deviceId = uuid();
+      const deviceId2 = uuid();
+      const plantId = uuid();
+      const wateringId = uuid();
+
+      await prisma.user.create({
+        data: {
+          deviceId,
+          plants: {
+            create: {
+              id: plantId,
+              name: 'test',
+              shareId: uuid(),
+              waterings: {
+                create: {
+                  id: wateringId,
+                },
+              },
+            },
+          },
+        },
+      });
+      expect(async () => {
+        await wateringService.cancelWatering(wateringId, deviceId2);
+      }).rejects.toThrow(new BadRequestException(Exception.INVALID_PLANT));
+    });
+  });
 });
