@@ -24,7 +24,9 @@ services:
       POSTGRES_DB: db
       PG_DATA: /var/lib/postgresql/data
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - plants-db:/var/lib/postgresql/data
     network_mode: host
 volumes:
-  pgdata:
+  plants-db:
+    name: plants-db
+    driver: local
