@@ -18,6 +18,21 @@ export class InfoController {
   private readonly logger = new Logger(InfoController.name);
 
   @ApiOperation({
+    summary: 'Checks health of app',
+  })
+  @ApiResponse({
+    status: 200,
+    type: 'string',
+  })
+  @Get('healthcheck')
+  @HttpCode(HttpStatus.OK)
+  async getHealthCheck() {
+    this.logger.debug(`Getting healthcheck`);
+
+    return 'ok';
+  }
+
+  @ApiOperation({
     summary: 'Get last patch notes with changes',
   })
   @ApiResponse({
