@@ -47,10 +47,10 @@ Please refer to [https://github.com/benmotyka/my-plants_app](https://github.com/
 
 ### Built With
 
-* [Node.js](https://nodejs.org/)
-* [NestJS](https://nestjs.com/)
-* [Prisma](https://www.prisma.io/)
-* [PostgreSQL](https://www.postgresql.org/)
+- [Node.js](https://nodejs.org/)
+- [NestJS](https://nestjs.com/)
+- [Prisma](https://www.prisma.io/)
+- [PostgreSQL](https://www.postgresql.org/)
 
 <!-- GETTING STARTED -->
 
