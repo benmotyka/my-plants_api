@@ -12,7 +12,11 @@ import { UserModule } from '@modules/user/user.module';
 import { WateringModule } from '@modules/watering/watering.module';
 import { InfoModule } from '@modules/info/info.module';
 import { BasicAuth } from '@middleware/basic-auth';
+import { LoggerMiddleware } from '@middleware/logger';
 import { UtilModule } from '@modules/util/util.module';
+// import { WinstonModule } from 'nest-winston';
+// import * as winston from 'winston';
+
 @Module({
   imports: [
     UserModule,
@@ -24,14 +28,16 @@ import { UtilModule } from '@modules/util/util.module';
       isGlobal: true,
     }),
     UtilModule,
+    // WinstonModule.forRoot({
+    //   transports: [new winston.transports.Console()],
+    // }),
   ],
 })
-export class AppModule {}
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(BasicAuth)
-//       .exclude({ path: 'info/patch-notes/(.*)', method: RequestMethod.ALL })
-//       .forRoutes('*');
-//   }
-// }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+    // .apply(BasicAuth)
+    // .exclude({ path: 'info/patch-notes/(.*)', method: RequestMethod.ALL })
+    // .forRoutes('*');
+  }
+}
