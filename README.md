@@ -45,6 +45,17 @@ Server app for My Plants mobile app.
 
 Please refer to [https://github.com/benmotyka/my-plants_app](https://github.com/benmotyka/my-plants_app) to get more information about the project.
 
+<br />
+
+<p align="center">
+  <!-- <a href="https://apps.apple.com">
+    <img alt="app-store" src="readme/app-store.png" />
+  </a> -->
+  <a href="https://play.google.com/store/apps/details?id=com.benmotyka.myplants">
+    <img alt="google-play" src="readme/google-play.png" />
+  </a>
+</p>
+
 ### Built With
 
 - [Node.js](https://nodejs.org/)
