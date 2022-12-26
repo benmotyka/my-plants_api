@@ -8,9 +8,18 @@ import { PatchNote } from './interfaces/PatchNote';
 export class InfoService {
   constructor(private prisma: PrismaService) {}
 
-  async getLastPatchNotes(amount: number): Promise<PatchNote[]> {
+  async getLastPatchNotes({
+    amount,
+    language,
+  }: {
+    amount: number;
+    language: string;
+  }): Promise<PatchNote[]> {
     const patchNotes = await this.prisma.patchNotes.findMany({
       take: amount,
+      where: {
+        language,
+      },
       orderBy: {
         createdAt: 'desc',
       },

@@ -40,14 +40,20 @@ export class InfoController {
     description: 'Array of patch notes',
     type: GetLastPatchNotesResponseDto,
   })
-  @Get('patch-notes/:amount')
+  @Get('patch-notes/:language/:amount')
   @HttpCode(HttpStatus.OK)
   async getLastPatchNotes(
+    @Param('language') language: string,
     @Param('amount', ParseIntPipe) amount: number,
   ): Promise<GetLastPatchNotesResponseDto> {
-    this.logger.debug(`Getting last ${amount} patch notes`);
+    this.logger.debug(
+      `Getting last ${amount} patch notes for language: ${language}`,
+    );
 
-    const patchNotes = await this.infoService.getLastPatchNotes(amount);
+    const patchNotes = await this.infoService.getLastPatchNotes({
+      amount,
+      language,
+    });
 
     return new GetLastPatchNotesResponseDto(patchNotes);
   }
