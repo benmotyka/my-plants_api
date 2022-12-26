@@ -15,6 +15,9 @@
     "test:int": "dotenv -e .env.test -- npx prisma migrate reset -f && dotenv -e .env.test -- jest -i --no-cache --config test/jest-int.config.ts",
     "posttest:int": "docker-compose -f docker-compose.test.yml down"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^9.0.11",
