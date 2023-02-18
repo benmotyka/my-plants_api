@@ -77,9 +77,10 @@ Please refer to [https://github.com/benmotyka/my-plants_app](https://github.com/
 
 ### Installation
 
-1. Clone this repo
+1. Clone this repo and enter project
    ```sh
    git clone https://github.com/benmotyka/my-plants_api.git
+   cd my-plants_api/
    ```
 2. Install NPM packages
    ```sh
@@ -96,6 +97,10 @@ Please refer to [https://github.com/benmotyka/my-plants_app](https://github.com/
 4. Run app
    ```sh
    docker-compose up --build
+   ```
+5. Apply database migrations
+   ```sh
+   npx prisma migrate reset
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
