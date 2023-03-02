@@ -19,6 +19,7 @@ model User {
   userSettings UserSettings?
   attachments  Attachment[]
   Reminder     Reminder[]
+  bugReports   BugReport[]
 
   @@map("users")
 }
@@ -103,16 +104,31 @@ model UserSettings {
 }
 
 model PatchNotes {
-  id       String   @id @default(uuid())
+  id       String @id @default(uuid())
   patch    String
   language String
 
-  changes  String[]
+  changes String[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("patch_notes")
+}
+
+model BugReport {
+  id          String  @id @default(uuid())
+  userId      String  @map("user_id")
+  email       String?
+  description String
+  deviceInfo  Json?    @map("device_info")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("bug_reports")
 }
 
 enum AttachmentType {
