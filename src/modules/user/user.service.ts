@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
 import { ResponseType } from '@enums/ResponseType';
+import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
 
 @Injectable()
 export class UserService {
@@ -88,5 +89,24 @@ export class UserService {
     }
 
     return ResponseType.SUCCESS;
+  }
+
+  async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
+    await this.prisma.bugReport.create({
+      data: {
+        description: bugReport.description,
+        email: bugReport.email,
+        user: {
+          connectOrCreate: {
+            create: {
+              deviceId,
+            },
+            where: {
+              deviceId,
+            },
+          },
+        },
+      },
+    });
   }
 }
