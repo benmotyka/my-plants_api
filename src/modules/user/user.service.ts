@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
 import { ResponseType } from '@enums/ResponseType';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
+import { Exception } from '@enums/Exception';
 
 @Injectable()
 export class UserService {
@@ -92,6 +93,23 @@ export class UserService {
   }
 
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
+    const BUG_REPORTS_THRESHOLD = 5;
+
+    const bugReports = await this.prisma.bugReport.findMany({
+      where: {
+        user: {
+          deviceId,
+        },
+        createdAt: {
+          gte: new Date(new Date().getTime() - 60 * 60 * 1000),
+        },
+      },
+    });
+
+    if (bugReports.length >= BUG_REPORTS_THRESHOLD) {
+      throw new BadRequestException(Exception.TOO_MANY_BUG_REPORTS);
+    }
+
     await this.prisma.bugReport.create({
       data: {
         description: bugReport.description,
