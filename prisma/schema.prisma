@@ -138,7 +138,3 @@ enum AttachmentType {
 enum ReminderType {
   plant_watering
 }
-
-enum VerificationType {
-  EMAIL_CONFIRMATION
-}
