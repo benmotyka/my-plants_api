@@ -186,6 +186,29 @@ export class PlantService {
     return ResponseType.SUCCESS;
   }
 
+  async deleteImage(attachmentId: string, deviceId: string): Promise<void> {
+    const attachment = await this.attachmentService.getAttachmentById(
+      attachmentId,
+    );
+
+    const userPlant = await this.prisma.plant.findFirst({
+      where: {
+        users: {
+          some: {
+            deviceId,
+          },
+        },
+        id: attachment.plantId,
+      },
+    });
+
+    if (!userPlant) {
+      throw new BadRequestException(Exception.INVALID_PLANT);
+    }
+
+    await this.attachmentService.softDeleteAttachmentById(attachment.id);
+  }
+
   async editPlant(
     payload: EditPlantRequestDto,
     deviceId: string,

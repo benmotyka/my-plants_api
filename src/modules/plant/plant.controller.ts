@@ -156,6 +156,23 @@ export class PlantController {
   }
 
   @ApiOperation({
+    summary: 'Delete plant image (attachment)',
+  })
+  @ApiResponse({
+    status: 200,
+  })
+  @Delete('images/:attachmentId')
+  async deleteImage(
+    @Param('attachmentId') attachmentId: string,
+    @DeviceId() deviceId,
+  ): Promise<void> {
+    this.logger.debug(
+      `Soft deleting attachment id: ${attachmentId} for device of id: ${deviceId}`,
+    );
+    return await this.plantService.deleteImage(attachmentId, deviceId);
+  }
+
+  @ApiOperation({
     summary: 'Get plants images history',
   })
   @ApiResponse({
