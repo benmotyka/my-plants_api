@@ -76,6 +76,7 @@ export class AttachmentService {
     return await this.prisma.attachment.findMany({
       where: {
         plantId: id,
+        deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',
@@ -87,6 +88,7 @@ export class AttachmentService {
     return await this.prisma.attachment.findFirst({
       where: {
         id,
+        deletedAt: null,
       },
       include: {
         user: {
