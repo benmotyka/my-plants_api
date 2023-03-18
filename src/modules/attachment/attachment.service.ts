@@ -76,9 +76,37 @@ export class AttachmentService {
     return await this.prisma.attachment.findMany({
       where: {
         plantId: id,
+        deletedAt: null,
       },
       orderBy: {
         createdAt: 'desc',
+      },
+    });
+  }
+
+  async getAttachmentById(id: string): Promise<Attachment> {
+    return await this.prisma.attachment.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+      include: {
+        user: {
+          select: {
+            deviceId: true,
+          },
+        },
+      },
+    });
+  }
+
+  async softDeleteAttachmentById(id: string): Promise<Attachment> {
+    return await this.prisma.attachment.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }
