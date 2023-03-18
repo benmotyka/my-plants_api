@@ -295,7 +295,10 @@ export class PlantService {
           [day]: [],
         };
       }
-      response[day].push(attachment.url);
+      response[day].push({
+        url: attachment.url,
+        id: attachment.id,
+      });
     });
 
     return response;

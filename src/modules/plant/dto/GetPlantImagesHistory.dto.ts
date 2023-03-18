@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+interface ImageData {
+  id: string;
+  url: string;
+}
 export interface ImagesData {
-  [key: string]: string[];
+  [key: string]: ImageData[];
 }
 
 export class GetPlantImagesHistoryResponseDto {
