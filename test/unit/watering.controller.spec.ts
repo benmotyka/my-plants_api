@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 
-import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { GetAllWateringsForPlantResponseDto } from '@modules/watering/dto/GetAllWateringsForPlantResponse.dto';
 import { WaterPlantResponseDto } from '@modules/watering/dto/WaterPlantResponse.dto';
@@ -47,14 +46,13 @@ describe('CatsController', () => {
 
   describe('waterPlant', () => {
     it('should return success status', async () => {
-      const result = ResponseType.SUCCESS;
       jest
         .spyOn(wateringService, 'waterPlant')
         .mockImplementation(async () => result);
 
       expect(
         await wateringController.waterPlant({ plantId: 'plantId' }, req),
-      ).toStrictEqual(new WaterPlantResponseDto(result));
+      ).toStrictEqual(void);
 
       expect(wateringService.waterPlant).toBeCalled();
     });

@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-import { ResponseType } from '@enums/ResponseType';
 import { PlantResponse } from '@shared/interfaces/PlantResponse';
 import { AttachmentService } from '@modules/attachment/attachment.service';
 import { PrismaService } from '@modules/prisma/prisma.service';
@@ -11,7 +10,7 @@ import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { Exception } from '@enums/Exception';
 import { UserService } from '@modules/user/user.service';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
-import { ImagesData } from './dto/GetPlantImagesHistory.dto';
+import { ImagesData } from './dto/GetPlantImagesHistoryResponse.dto';
 import { UploadImageRequestDto } from './dto/UploadImageRequest.dto';
 import { UtilService } from '@modules/util/util.service';
 
@@ -171,7 +170,7 @@ export class PlantService {
   async uploadImage(
     payload: UploadImageRequestDto,
     deviceId: string,
-  ): Promise<ResponseType> {
+  ): Promise<void> {
     const user = await this.userService.findOneOrCreateByDeviceId(deviceId);
 
     const imageUrl = await this.attachmentService.uploadFile(payload.image);
@@ -182,8 +181,6 @@ export class PlantService {
       attachmentType: 'plant_picture',
       url: imageUrl,
     });
-
-    return ResponseType.SUCCESS;
   }
 
   async deleteImage(attachmentId: string, deviceId: string): Promise<void> {
@@ -280,10 +277,8 @@ export class PlantService {
     };
   }
 
-  async deletePlant(id: string, deviceId: string): Promise<ResponseType> {
+  async deletePlant(id: string, deviceId: string) {
     await this.userService.removePlantFromUserCollection(id, deviceId);
-
-    return ResponseType.SUCCESS;
   }
 
   async getPlantImagesHistory(
