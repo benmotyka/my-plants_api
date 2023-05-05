@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import dayjs from 'dayjs';
 import { User } from '.prisma/client';
 
-import { ResponseType } from '@enums/ResponseType';
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { WateringService } from '@modules/watering/watering.service';
 

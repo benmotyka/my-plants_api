@@ -13,7 +13,6 @@ import {
 
 import { CreatePlantRequestDto } from '@modules/plant/dto/CreatePlantRequest.dto';
 import { CreatePlantResponseResponseDto } from '@modules/plant/dto/CreatePlantResponse.dto';
-import { DeletePlantResponseDto } from '@modules/plant/dto/DeletePlantResponse.dto';
 import { EditPlantRequestDto } from '@modules/plant/dto/EditPlantRequest.dto';
 import { EditPlantResponseResponseDto } from '@modules/plant/dto/EditPlantResponseResponse.dto';
 import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse.dto';
@@ -22,8 +21,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
 import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
-import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistory.dto';
-import { UploadImageResponseDto } from './dto/UploadImageResponse.dto';
+import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistoryResponse.dto';
 import { UploadImageRequestDto } from './dto/UploadImageRequest.dto';
 
 @ApiTags('Plants')
@@ -119,18 +117,15 @@ export class PlantController {
   @ApiResponse({
     status: 200,
     description: 'Response status',
-    type: DeletePlantResponseDto,
   })
   @Delete(':id')
   async deletePlant(
     @Param('id') id: string,
     @DeviceId() deviceId,
-  ): Promise<DeletePlantResponseDto> {
+  ): Promise<void> {
     this.logger.debug(`Deleting plant for device of: ${deviceId}`);
 
-    const result = await this.plantService.deletePlant(id, deviceId);
-
-    return new DeletePlantResponseDto(result);
+    return await this.plantService.deletePlant(id, deviceId);
   }
 
   @ApiOperation({
@@ -139,20 +134,17 @@ export class PlantController {
   @ApiResponse({
     status: 201,
     description: 'Response status',
-    type: UploadImageResponseDto,
   })
   @Post('images')
   async uploadImage(
     @Body() payload: UploadImageRequestDto,
     @DeviceId() deviceId,
-  ): Promise<UploadImageResponseDto> {
+  ): Promise<void> {
     this.logger.debug(
       `Uploading image for plant of id: ${payload.plantId} and device of id: ${deviceId}`,
     );
 
-    const result = await this.plantService.uploadImage(payload, deviceId);
-
-    return new UploadImageResponseDto(result);
+    return await this.plantService.uploadImage(payload, deviceId);
   }
 
   @ApiOperation({

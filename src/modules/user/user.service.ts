@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
-import { ResponseType } from '@enums/ResponseType';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
 import { Exception } from '@enums/Exception';
 
@@ -88,8 +87,6 @@ export class UserService {
         },
       });
     }
-
-    return ResponseType.SUCCESS;
   }
 
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
