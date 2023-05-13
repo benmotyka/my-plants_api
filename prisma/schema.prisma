@@ -138,3 +138,7 @@ enum AttachmentType {
 enum ReminderType {
   plant_watering
 }
+
+model Tree {
+  id Strin @id @default(uuid())
+}

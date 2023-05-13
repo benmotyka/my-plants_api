@@ -8,8 +8,6 @@ import { WateringModule } from '@modules/watering/watering.module';
 import { InfoModule } from '@modules/info/info.module';
 import { LoggerMiddleware } from '@middleware/logger';
 import { UtilModule } from '@modules/util/util.module';
-// import { WinstonModule } from 'nest-winston';
-// import * as winston from 'winston';
 
 @Module({
   imports: [
@@ -21,10 +19,7 @@ import { UtilModule } from '@modules/util/util.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UtilModule,
-    // WinstonModule.forRoot({
-    //   transports: [new winston.transports.Console()],
-    // }),
+    UtilModule
   ],
 })
 export class AppModule implements NestModule {
