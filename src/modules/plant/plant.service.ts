@@ -54,6 +54,9 @@ export class PlantService {
           take: 1,
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      }
     });
 
     return plants.map((plant) => ({
