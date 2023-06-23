@@ -55,7 +55,7 @@ export class PlantService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: 'asc',
       }
     });
 
