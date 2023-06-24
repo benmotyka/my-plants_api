@@ -34,13 +34,11 @@
     "helmet": "^5.1.0",
     "lodash": "^4.17.21",
     "nanoid": "^3.3.4",
-    "nest-winston": "^1.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.4.0",
     "sharp": "^0.30.7",
-    "uuid": "^9.0.0",
-    "winston": "^3.8.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.1.1",
