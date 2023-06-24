@@ -8,8 +8,9 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  deviceId String @unique
+  id            String  @id @default(uuid())
+  deviceId      String  @unique
+  expoPushToken String? @unique @map("expo_push_token")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -121,7 +122,7 @@ model BugReport {
   userId      String  @map("user_id")
   email       String?
   description String
-  deviceInfo  Json?    @map("device_info")
+  deviceInfo  Json?   @map("device_info")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
