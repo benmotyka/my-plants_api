@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
 import { Exception } from '@enums/Exception';
+import { UpsertPushNotificationsTokenRequestDto } from './dto/UpsertPushNotificationsTokenRequest.dto';
 
 @Injectable()
 export class UserService {
@@ -87,6 +88,24 @@ export class UserService {
         },
       });
     }
+  }
+
+  async upsertPushNotificationsToken(
+    payload: UpsertPushNotificationsTokenRequestDto,
+    deviceId: string,
+  ) {
+    await this.prisma.user.upsert({
+      create: {
+        deviceId,
+        expoPushToken: payload.token,
+      },
+      update: {
+        expoPushToken: payload.token,
+      },
+      where: {
+        deviceId,
+      },
+    });
   }
 
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {

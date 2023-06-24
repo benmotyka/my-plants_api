@@ -9,10 +9,11 @@ import {
 } from '@nestjs/common';
 
 import { UserService } from './user.service';
-import { UpsertSettingsRequestDto } from './dto/UpsertSettingsequest.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
+import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
+import { UpsertPushNotificationsTokenRequestDto } from './dto/UpsertPushNotificationsTokenRequest.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -53,5 +54,22 @@ export class UserController {
     this.logger.debug(`Adding bug report for user: ${deviceId}`);
 
     await this.userService.addBugReport(bugReport, deviceId);
+  }
+
+  @ApiOperation({
+    summary: 'Upsert push notification token',
+  })
+  @ApiResponse({
+    status: 200,
+  })
+  @Put('notifications')
+  @HttpCode(HttpStatus.OK)
+  async upsertPushNotificationsToken(
+    @Body() payload: UpsertPushNotificationsTokenRequestDto,
+    @DeviceId() deviceId,
+  ): Promise<void> {
+    this.logger.debug(`Upserting push notifications token: ${payload.token} for deviceId: ${deviceId}`);
+
+    await this.userService.upsertPushNotificationsToken(payload, deviceId);
   }
 }
