@@ -23,10 +23,14 @@ export class RemindingService {
       const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
 
       if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
-        this.logger.debug('Sending reminder for plant:');
+        const messages = [];
 
         for (const user of reminder.plant.users) {
-          this.logger.debug(`Sending reminder to user: ${user.id}`);
+          this.logger.debug(`Adding user: ${user.id} to message list`);
+          messages.push({
+            to: user.deviceId,
+            body: `It's time to water ${reminder.plant.name}!`,
+          });
         }
         await this.changeReminderNotifiedStatus(reminder.id, true);
       }
