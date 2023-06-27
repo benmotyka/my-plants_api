@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { Plant } from '@prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { CreateReminderDetails } from '@modules/reminding/interfaces/createReminderDetails';
@@ -14,15 +13,22 @@ export class RemindingService {
   @Cron('*/10 * * * * *')
   async sendReminders() {
     const reminders = await this.getAllUnsentRemindersDetails();
-    for (const reminder of reminders) {
-      if (reminder.plant.waterings.length) {
-        const now = dayjs();
-        const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
 
-        if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
-          this.logger.debug('Sending reminder for plant:');
-          await this.changeReminderNotifiedStatus(reminder.id, true);
+    for (const reminder of reminders) {
+      if (!reminder.plant.waterings.length) {
+        continue;
+      }
+  
+      const now = dayjs();
+      const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
+
+      if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
+        this.logger.debug('Sending reminder for plant:');
+
+        for (const user of reminder.plant.users) {
+          this.logger.debug(`Sending reminder to user: ${user.id}`);
         }
+        await this.changeReminderNotifiedStatus(reminder.id, true);
       }
     }
   }
@@ -41,6 +47,7 @@ export class RemindingService {
               },
               take: 1,
             },
+            users: true,
           },
         },
       },
