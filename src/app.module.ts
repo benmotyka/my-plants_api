@@ -8,7 +8,7 @@ import { WateringModule } from '@modules/watering/watering.module';
 import { InfoModule } from '@modules/info/info.module';
 import { LoggerMiddleware } from '@middleware/logger';
 import { UtilModule } from '@modules/util/util.module';
-
+import { NotifyModule } from '@modules/notify/notify.module'
 @Module({
   imports: [
     UserModule,
@@ -19,7 +19,8 @@ import { UtilModule } from '@modules/util/util.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UtilModule
+    UtilModule,
+    NotifyModule
   ],
 })
 export class AppModule implements NestModule {

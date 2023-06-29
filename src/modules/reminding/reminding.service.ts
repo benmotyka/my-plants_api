@@ -3,11 +3,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
+import { NotifyService } from '@modules/notify/notify.service'
 import { CreateReminderDetails } from '@modules/reminding/interfaces/createReminderDetails';
 
 @Injectable()
 export class RemindingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notifyService: NotifyService
+    ) {}
   private readonly logger = new Logger(RemindingService.name);
 
   @Cron('*/10 * * * * *')
