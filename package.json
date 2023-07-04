@@ -8,14 +8,15 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "prisma:migrate:deploy": "docker exec -it api /bin/sh -c 'npx prisma migrate deploy'",
-    "prisma:migrate:dev": "docker exec -it api /bin/sh -c 'npx prisma migrate dev'",
     "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test:unit": "jest --config test/jest-unit.config.ts",
     "pretest:int": "docker-compose -f docker-compose.test.yml up -d",
     "test:int": "dotenv -e .env.test -- npx prisma migrate reset -f && dotenv -e .env.test -- jest -i --no-cache --config test/jest-int.config.ts",
-    "posttest:int": "docker-compose -f docker-compose.test.yml down"
+    "posttest:int": "docker-compose -f docker-compose.test.yml down",
+    "prisma:migrate:dev": "docker exec -it api /bin/sh -c 'npx prisma migrate dev'",
+    "prisma:migrate:deploy": "docker exec -it api /bin/sh -c 'npx prisma migrate deploy'",
+    "prisma:generate": "docker exec -it api /bin/sh -c 'npx prisma generate'"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
