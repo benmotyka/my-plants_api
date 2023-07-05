@@ -32,7 +32,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async upsertSettings(
     @Body() settings: UpsertSettingsRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(`Changing settings for user: ${deviceId}`);
 
@@ -49,7 +49,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async addBugReport(
     @Body() bugReport: AddBugReportRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(`Adding bug report for user: ${deviceId}`);
 
@@ -66,9 +66,11 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async upsertPushNotificationsToken(
     @Body() payload: UpsertPushNotificationsTokenRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
-    this.logger.debug(`Upserting push notifications token: ${payload.token} for deviceId: ${deviceId}`);
+    this.logger.debug(
+      `Upserting push notifications token: ${payload.token} for deviceId: ${deviceId}`,
+    );
 
     await this.userService.upsertPushNotificationsToken(payload, deviceId);
   }

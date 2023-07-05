@@ -16,7 +16,8 @@
     "posttest:int": "docker-compose -f docker-compose.test.yml down",
     "prisma:migrate:dev": "docker exec -it api /bin/sh -c 'npx prisma migrate dev'",
     "prisma:migrate:deploy": "docker exec -it api /bin/sh -c 'npx prisma migrate deploy'",
-    "prisma:generate": "docker exec -it api /bin/sh -c 'npx prisma generate'"
+    "prisma:generate": "docker exec -it api /bin/sh -c 'chown -R node:node ./node_modules; npx prisma generate'",
+    "prisma:studio": "docker exec -it api /bin/sh -c 'npx prisma studio'"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"

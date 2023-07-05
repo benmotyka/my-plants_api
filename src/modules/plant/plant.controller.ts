@@ -19,6 +19,7 @@ import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse
 import { PlantService } from '@modules/plant/plant.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
+import { UserLocale } from '@decorators/userLocale.decorator';
 import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistoryResponse.dto';
@@ -40,9 +41,12 @@ export class PlantController {
   })
   @Get('')
   @HttpCode(HttpStatus.OK)
-  async getAllPlants(@DeviceId() deviceId): Promise<GetAllPlantsResponseDto> {
+  async getAllPlants(
+    @DeviceId() deviceId: string,
+    @UserLocale() locale: string,
+  ): Promise<GetAllPlantsResponseDto> {
     this.logger.debug(`Getting all plants for device of id: ${deviceId}`);
-    const plants = await this.plantService.getAllPlants(deviceId);
+    const plants = await this.plantService.getAllPlants(deviceId, locale);
 
     return new GetAllPlantsResponseDto(plants);
   }
@@ -59,7 +63,7 @@ export class PlantController {
   @HttpCode(HttpStatus.CREATED)
   async createPlant(
     @Body() payload: CreatePlantRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<CreatePlantResponseResponseDto> {
     this.logger.debug(
       `Creating plant for device of id: ${deviceId} with name: ${payload.name}`,
@@ -81,7 +85,7 @@ export class PlantController {
   @HttpCode(HttpStatus.CREATED)
   async importPlant(
     @Body() payload: ImportPlantRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<ImportPlantResponseResponseDto> {
     // @NOTE: Fake wait to prevent bruteforce
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -102,7 +106,7 @@ export class PlantController {
   @Put('')
   async editPlant(
     @Body() payload: EditPlantRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<EditPlantResponseResponseDto> {
     this.logger.debug(
       `Updating plant for device of id: ${deviceId} with name: ${payload.name}`,
@@ -121,7 +125,7 @@ export class PlantController {
   @Delete(':id')
   async deletePlant(
     @Param('id') id: string,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(`Deleting plant for device of: ${deviceId}`);
 
@@ -138,7 +142,7 @@ export class PlantController {
   @Post('images')
   async uploadImage(
     @Body() payload: UploadImageRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(
       `Uploading image for plant of id: ${payload.plantId} and device of id: ${deviceId}`,
@@ -156,7 +160,7 @@ export class PlantController {
   @Delete('images/:attachmentId')
   async deleteImage(
     @Param('attachmentId') attachmentId: string,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(
       `Soft deleting attachment id: ${attachmentId} for device of id: ${deviceId}`,
@@ -175,7 +179,7 @@ export class PlantController {
   @Get('history/images/:id')
   async getPlantImagesHistory(
     @Param('id') id: string,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<GetPlantImagesHistoryResponseDto> {
     this.logger.debug(`Getting history of images for plantId: ${id}`);
 

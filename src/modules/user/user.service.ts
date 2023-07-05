@@ -108,6 +108,25 @@ export class UserService {
     });
   }
 
+  async updateUserLanguage(deviceId: string, deviceLanguage: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        deviceId,
+      },
+    });
+
+    if (user) {
+      await this.prisma.user.update({
+        where: {
+          deviceId,
+        },
+        data: {
+          deviceLanguage,
+        },
+      });
+    }
+  }
+
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
     const BUG_REPORTS_THRESHOLD = 5;
 
