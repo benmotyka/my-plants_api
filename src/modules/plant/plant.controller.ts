@@ -19,7 +19,6 @@ import { GetAllPlantsResponseDto } from '@modules/plant/dto/GetAllPlantsResponse
 import { PlantService } from '@modules/plant/plant.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeviceId } from '@decorators/deviceId.decorator';
-import { UserLocale } from '@decorators/userLocale.decorator';
 import { ImportPlantResponseResponseDto } from './dto/ImportPlantResponse.dto';
 import { ImportPlantRequestDto } from './dto/ImportPlantRequest.dto';
 import { GetPlantImagesHistoryResponseDto } from './dto/GetPlantImagesHistoryResponse.dto';
@@ -43,10 +42,9 @@ export class PlantController {
   @HttpCode(HttpStatus.OK)
   async getAllPlants(
     @DeviceId() deviceId: string,
-    @UserLocale() locale: string,
   ): Promise<GetAllPlantsResponseDto> {
     this.logger.debug(`Getting all plants for device of id: ${deviceId}`);
-    const plants = await this.plantService.getAllPlants(deviceId, locale);
+    const plants = await this.plantService.getAllPlants(deviceId);
 
     return new GetAllPlantsResponseDto(plants);
   }

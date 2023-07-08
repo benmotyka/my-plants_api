@@ -94,7 +94,10 @@ export class UserService {
     await this.prisma.user.upsert({
       create: {
         deviceId,
-        ...payload,
+        expoPushToken: payload.pushNotificationToken,
+        ...(payload.deviceLanguage && {
+          deviceLanguage: payload.deviceLanguage,
+        }),
       },
       update: {
         ...payload,
@@ -103,25 +106,6 @@ export class UserService {
         deviceId,
       },
     });
-  }
-
-  async updateUserLanguage(deviceId: string, deviceLanguage: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        deviceId,
-      },
-    });
-
-    if (user) {
-      await this.prisma.user.update({
-        where: {
-          deviceId,
-        },
-        data: {
-          deviceLanguage,
-        },
-      });
-    }
   }
 
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
