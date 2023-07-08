@@ -1,28 +1,42 @@
 import dayjs from 'dayjs';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { Plant } from '@prisma/client';
 
 import { PrismaService } from '@modules/prisma/prisma.service';
+import { NotifyService } from '@modules/notify/notify.service'
 import { CreateReminderDetails } from '@modules/reminding/interfaces/createReminderDetails';
 
 @Injectable()
 export class RemindingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notifyService: NotifyService
+    ) {}
   private readonly logger = new Logger(RemindingService.name);
 
   @Cron('*/10 * * * * *')
   async sendReminders() {
     const reminders = await this.getAllUnsentRemindersDetails();
-    for (const reminder of reminders) {
-      if (reminder.plant.waterings.length) {
-        const now = dayjs();
-        const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
 
-        if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
-          this.logger.debug('Sending reminder for plant:');
-          await this.changeReminderNotifiedStatus(reminder.id, true);
+    for (const reminder of reminders) {
+      if (!reminder.plant.waterings.length) {
+        continue;
+      }
+  
+      const now = dayjs();
+      const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
+
+      if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
+        const messages = [];
+
+        for (const user of reminder.plant.users) {
+          this.logger.debug(`Adding user: ${user.id} to message list`);
+          messages.push({
+            to: user.deviceId,
+            body: `It's time to water ${reminder.plant.name}!`,
+          });
         }
+        await this.changeReminderNotifiedStatus(reminder.id, true);
       }
     }
   }
@@ -41,6 +55,7 @@ export class RemindingService {
               },
               take: 1,
             },
+            users: true,
           },
         },
       },

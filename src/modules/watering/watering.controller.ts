@@ -35,7 +35,7 @@ export class WateringController {
   @HttpCode(HttpStatus.OK)
   async getAllWateringsForPlant(
     @Param('plantId') plantId: string,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<GetAllWateringsForPlantResponseDto> {
     this.logger.debug(
       `Getting all waterings for plant of id: ${plantId} for device of id: ${deviceId}`,
@@ -61,7 +61,7 @@ export class WateringController {
   @HttpCode(HttpStatus.CREATED)
   async waterPlant(
     @Body() waterPlantRequestDto: WaterPlantRequestDto,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<WaterPlantResponseDto> {
     this.logger.debug(
       `Watering plant of id: ${waterPlantRequestDto.plantId} for device of id: ${deviceId}`,
@@ -85,7 +85,7 @@ export class WateringController {
   @HttpCode(HttpStatus.OK)
   async cancelWatering(
     @Param('id') id: string,
-    @DeviceId() deviceId,
+    @DeviceId() deviceId: string,
   ): Promise<void> {
     this.logger.debug(
       `Canceling watering plant of id: ${id} done by user: ${deviceId}`,
