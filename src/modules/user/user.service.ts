@@ -4,7 +4,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
 import { Exception } from '@enums/Exception';
-import { UpsertPushNotificationsTokenRequestDto } from './dto/UpsertPushNotificationsTokenRequest.dto';
+import { UpdateUserInfoRequestDto } from './dto/UpdateUserInfoRequest.dto';
 
 @Injectable()
 export class UserService {
@@ -90,17 +90,14 @@ export class UserService {
     }
   }
 
-  async upsertPushNotificationsToken(
-    payload: UpsertPushNotificationsTokenRequestDto,
-    deviceId: string,
-  ) {
+  async updateUserInfo(payload: UpdateUserInfoRequestDto, deviceId: string) {
     await this.prisma.user.upsert({
       create: {
         deviceId,
-        expoPushToken: payload.token,
+        ...payload,
       },
       update: {
-        expoPushToken: payload.token,
+        ...payload,
       },
       where: {
         deviceId,
