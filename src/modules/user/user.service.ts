@@ -100,7 +100,10 @@ export class UserService {
         }),
       },
       update: {
-        ...payload,
+        expoPushToken: payload.pushNotificationToken,
+        ...(payload.deviceLanguage && {
+          deviceLanguage: payload.deviceLanguage,
+        }),
       },
       where: {
         deviceId,
