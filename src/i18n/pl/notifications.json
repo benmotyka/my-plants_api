@@ -1,0 +1,6 @@
+{
+    "wateringReminder": {
+        "header": "Podlej swoją roślinę 🌱",
+        "description": "Twoja roślina {{plantName}} potrzebuje podlania"
+    }
+}

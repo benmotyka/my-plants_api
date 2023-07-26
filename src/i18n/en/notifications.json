@@ -1,0 +1,6 @@
+{
+    "wateringReminder": {
+        "header": "Water your plant 🌱",
+        "descrption": "Your plant {{plantName}} needs watering"
+    }
+}

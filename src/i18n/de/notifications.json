@@ -1,0 +1,6 @@
+{
+    "wateringReminder": {
+        "header": "Gießen Sie Ihre Pflanze 🌱",
+        "description": "Ihre Pflanze {{plantName}} benötigt Wasser"
+    }
+}
