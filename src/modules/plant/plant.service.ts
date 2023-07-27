@@ -24,10 +24,7 @@ export class PlantService {
     private utilService: UtilService,
   ) {}
 
-  async getAllPlants(
-    deviceId: string,
-    locale?: string,
-  ): Promise<PlantResponse[]> {
+  async getAllPlants(deviceId: string): Promise<PlantResponse[]> {
     const plants = await this.prisma.plant.findMany({
       where: {
         deletedAt: null,
@@ -60,10 +57,6 @@ export class PlantService {
       orderBy: {
         createdAt: 'asc',
       },
-    });
-
-    this.userService.updateUserLanguage(deviceId, locale).catch((error) => {
-      console.error('Error updating user language', error);
     });
 
     return plants.map((plant) => ({

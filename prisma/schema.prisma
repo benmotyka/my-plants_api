@@ -10,7 +10,8 @@ datasource db {
 model User {
   id             String  @id @default(uuid())
   deviceId       String  @unique
-  expoPushToken  String? @unique @map("expo_push_token")
+  expoPushToken  String? @map("expo_push_token")
+  deviceInfo     Json?   @map("device_info")
   deviceLanguage String  @default("en") @map("device_language")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)

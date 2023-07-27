@@ -4,7 +4,7 @@ import { PrismaService } from '@modules/prisma/prisma.service';
 import { UpsertSettingsRequestDto } from './dto/UpsertSettingsRequest.dto';
 import { AddBugReportRequestDto } from './dto/AddBugReportRequest.dto';
 import { Exception } from '@enums/Exception';
-import { UpsertPushNotificationsTokenRequestDto } from './dto/UpsertPushNotificationsTokenRequest.dto';
+import { UpdateUserInfoRequestDto } from './dto/UpdateUserInfoRequest.dto';
 
 @Injectable()
 export class UserService {
@@ -90,41 +90,25 @@ export class UserService {
     }
   }
 
-  async upsertPushNotificationsToken(
-    payload: UpsertPushNotificationsTokenRequestDto,
-    deviceId: string,
-  ) {
+  async updateUserInfo(payload: UpdateUserInfoRequestDto, deviceId: string) {
     await this.prisma.user.upsert({
       create: {
         deviceId,
-        expoPushToken: payload.token,
+        expoPushToken: payload.pushNotificationToken,
+        ...(payload.deviceLanguage && {
+          deviceLanguage: payload.deviceLanguage,
+        }),
       },
       update: {
-        expoPushToken: payload.token,
+        expoPushToken: payload.pushNotificationToken,
+        ...(payload.deviceLanguage && {
+          deviceLanguage: payload.deviceLanguage,
+        }),
       },
       where: {
         deviceId,
       },
     });
-  }
-
-  async updateUserLanguage(deviceId: string, deviceLanguage: string) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        deviceId,
-      },
-    });
-
-    if (user) {
-      await this.prisma.user.update({
-        where: {
-          deviceId,
-        },
-        data: {
-          deviceLanguage,
-        },
-      });
-    }
   }
 
   async addBugReport(bugReport: AddBugReportRequestDto, deviceId: string) {
