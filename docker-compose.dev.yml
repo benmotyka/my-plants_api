@@ -1,12 +1,23 @@
 version: '3.8'
 
 services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    command: npm run start:dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - db
   db:
     image: postgres:12
     container_name: db
     restart: unless-stopped
-    ports:
-      - 5401:5432
     environment:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: password
@@ -14,6 +25,7 @@ services:
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - plants-db:/var/lib/postgresql/data
+    network_mode: host
 volumes:
   plants-db:
     name: plants-db
