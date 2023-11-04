@@ -18,6 +18,7 @@ const main = async () => {
       sound: 'default',
       body: 'Water your plant!`',
       data: { withSome: 'data' },
+      title: "My Plants"
     });
   }
 

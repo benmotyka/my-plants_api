@@ -14,9 +14,10 @@ export class RemindingService {
     ) {}
   private readonly logger = new Logger(RemindingService.name);
 
-  @Cron('*/10 * * * * *')
+  // @Cron('*/10 * * * * *')
   async sendReminders() {
     const reminders = await this.getAllUnsentRemindersDetails();
+    const messagesToBeSent = [];
 
     for (const reminder of reminders) {
       if (!reminder.plant.waterings.length) {
@@ -26,19 +27,29 @@ export class RemindingService {
       const now = dayjs();
       const lastWatering = dayjs(reminder.plant.waterings[0].createdAt);
 
-      if (reminder.frequencyDays >= now.diff(lastWatering, 'day')) {
-        const messages = [];
+      this.logger.debug(`Checking reminder ${reminder.id} for ${reminder.plant.name}. Last watering was ${lastWatering.format('YYYY-MM-DD')} and reminder frequency is ${reminder.frequencyDays} days. Now is: ${now.format('YYYY-MM-DD')} so the if result will be ${reminder.frequencyDays <= now.diff(lastWatering, 'day')} because now.diff is ${now.diff(lastWatering, 'day')}`);
+
+      if (reminder.frequencyDays <= now.diff(lastWatering, 'day')) {
 
         for (const user of reminder.plant.users) {
           this.logger.debug(`Adding user: ${user.id} to message list`);
-          messages.push({
+          messagesToBeSent.push({
             to: user.deviceId,
             body: `It's time to water ${reminder.plant.name}!`,
           });
         }
-        await this.changeReminderNotifiedStatus(reminder.id, true);
       }
     }
+
+    this.logger.debug(`Sending ${messagesToBeSent.length} messages`);
+    this.logger.debug(`Messages: ${JSON.stringify(messagesToBeSent)}`);
+
+    // Sending messages
+
+    // Updating status to all reminders so they won't be sent again
+    // Put this somewhere, maybe in loop, or create another function
+    // this.logger.debug(`Changing reminder status for ${reminder.id}`);
+    // await this.changeReminderNotifiedStatus(reminder.id, true);
   }
 
   async getAllUnsentRemindersDetails() {
